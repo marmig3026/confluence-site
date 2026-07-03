@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Confluence — Pittsburgh Vacation Rental</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site.css">
+<style>
+  html { scroll-behavior: smooth; }
+
+  /* ---------- Full-screen video hero ---------- */
+  .hero-video {
+    position: relative;
+    height: 100vh;
+    min-height: 560px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #fff;
+    margin-top: -61px; /* pulls up under the sticky header so video reaches the very top */
+  }
+  .hero-video video {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    z-index: 0;
+  }
+  .hero-video::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0.32) 0%, rgba(0,0,0,0.5) 100%);
+    z-index: 1;
+  }
+  .hero-content {
+    position: relative; z-index: 2;
+    max-width: 720px;
+    padding: 0 24px;
+  }
+  .hero-content h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: clamp(2.3rem, 6.8vw, 4rem);
+    color: #fff;
+    line-height: 1.08;
+    letter-spacing: -0.01em;
+  }
+  .hero-content p {
+    margin-top: 18px;
+    font-size: 1.02rem;
+    line-height: 1.65;
+    opacity: 0.94;
+    max-width: 600px;
+    margin-left: auto; margin-right: auto;
+  }
+  .btn-book {
+    display: inline-block;
+    margin-top: 32px;
+    background: #fff;
+    color: var(--frame);
+    text-decoration: none;
+    padding: 15px 36px;
+    border-radius: 999px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+  }
+  .btn-book:hover { background: var(--wainscot); }
+
+  .scroll-cue {
+    position: absolute; bottom: 26px; left: 50%; transform: translateX(-50%);
+    z-index: 2; color: #fff; opacity: 0.8; font-size: 0.7rem; letter-spacing: 0.14em;
+    text-transform: uppercase; text-align: center;
+  }
+  .scroll-cue .chev {
+    display: block; width: 10px; height: 10px; margin: 8px auto 0;
+    border-right: 2px solid #fff; border-bottom: 2px solid #fff;
+    transform: rotate(45deg);
+    animation: bob 1.8s ease-in-out infinite;
+  }
+  @keyframes bob { 0%,100% { transform: rotate(45deg) translate(0,0); } 50% { transform: rotate(45deg) translate(4px,4px); } }
+
+  /* ---------- Intro copy below the fold ---------- */
+  .intro-copy {
+    max-width: 680px; margin: 70px auto 20px; text-align: center; padding: 0 24px;
+  }
+  .intro-copy p {
+    color: var(--ink-soft); line-height: 1.75; font-size: 1.05rem;
+  }
+</style>
+</head>
+<body data-page="home">
+
+<div id="site-header"></div>
+
+<div class="hero-video">
+  <!-- ============================================================
+       Add your real video: drop an .mp4 file into this folder and
+       set the src below. Keep it well-compressed (a few MB, not
+       100+) so it loads quickly on guests' phones. The poster image
+       shows while the video loads, or if video can't play.
+  ============================================================= -->
+  <video autoplay muted loop playsinline poster="confluence-house.png">
+    <source src="REPLACE-WITH-YOUR-VIDEO.mp4" type="video/mp4">
+  </video>
+  <div class="hero-content">
+    <h1>Where Pittsburgh Comes Together</h1>
+    <p>Inspired by the meeting of Pittsburgh's three rivers, The Confluence is a restored triplex with two private suites and a combined stay option&mdash;designed for gathering, exploring, and making memories.</p>
+    <a class="btn-book" href="book.html">Book Now</a>
+  </div>
+  <div class="scroll-cue">Scroll<span class="chev"></span></div>
+</div>
+
+<div class="intro-copy">
+  <p>Inspired by the place where Pittsburgh's three rivers meet, The Confluence celebrates the coming together of people, places, and experiences. Stay in one thoughtfully designed suite for an intimate getaway, or reserve both suites together for family gatherings, group trips, and shared adventures.</p>
+</div>
+
+<div class="section">
+  <div class="card-grid">
+    <a class="unit-card" href="unit-monongahela.html">
+      <div class="thumb"><img src="confluence-house.png" alt=""></div>
+      <div class="card-body">
+        <h3>The Monongahela</h3>
+        <p>A cozy private suite with warm, quiet character.</p>
+        <span class="tag">View suite &rarr;</span>
+      </div>
+    </a>
+    <a class="unit-card" href="unit-allegheny.html">
+      <div class="thumb"><img src="confluence-house.png" alt=""></div>
+      <div class="card-body">
+        <h3>The Allegheny</h3>
+        <p>Bright, airy, and made for longer stays.</p>
+        <span class="tag">View suite &rarr;</span>
+      </div>
+    </a>
+    <a class="unit-card" href="unit-point.html">
+      <div class="thumb"><img src="confluence-house.png" alt=""></div>
+      <div class="card-body">
+        <h3>The Point</h3>
+        <p>Both suites combined &mdash; the whole house, for groups.</p>
+        <span class="tag">View suite &rarr;</span>
+      </div>
+    </a>
+  </div>
+  <div style="text-align:center;">
+    <a class="btn-primary" href="book.html">Check availability</a>
+  </div>
+</div>
+
+<div id="site-footer"></div>
+<script src="site.js"></script>
+</body>
+</html>
