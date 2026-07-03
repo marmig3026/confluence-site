@@ -3,33 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Confluence — Pittsburgh</title>
+<title>The Dog Wall — The Confluence</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-  :root{
-    --wall: #9c9184; --wall-2: #948a7d; --wainscot: #f4f2ee;
-    --ink: #1c1a17; --ink-soft: #6b665e; --frame: #171614; --mat: #ffffff;
-  }
-  * { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; background: var(--wainscot); color: var(--ink); font-family: 'Inter', sans-serif; }
-  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
-  img { max-width: 100%; }
-
-  /* ---------- Booking section ---------- */
-  .booking-section { max-width: 900px; margin: 0 auto; padding: 56px 20px 20px; text-align: center; }
-  .booking-section h2 { font-family: 'Fraunces', serif; font-weight: 500; font-size: 2rem; margin: 0 0 8px; }
-  .booking-section p.sub { color: var(--ink-soft); margin: 0 0 28px; }
-  .widget-frame-wrap { min-width: 320px; min-height: 900px; border: 1px solid #00000014; border-radius: 8px; overflow: hidden; background: #fff; }
-
-  /* ---------- Dog wall (same design as the prototype) ---------- */
-  .dogwall-page { background: linear-gradient(180deg, var(--wall) 0%, var(--wall-2) 100%); margin-top: 60px; }
+  .dogwall-page { background: linear-gradient(180deg, var(--wall) 0%, var(--wall-2) 100%); }
   .wrap { max-width: 1120px; margin: 0 auto; padding: 44px 20px 0; }
   .hero { text-align: center; margin-bottom: 6px; }
   .logo-mark { width: 92px; margin: 0 auto 18px; display: block; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.15)); }
-  .eyebrow { font-size: 0.7rem; letter-spacing: 0.24em; text-transform: uppercase; color: var(--wainscot); opacity: 0.75; font-weight: 600; margin-bottom: 10px; }
+  .eyebrow-dw { font-size: 0.7rem; letter-spacing: 0.24em; text-transform: uppercase; color: var(--wainscot); opacity: 0.75; font-weight: 600; margin-bottom: 10px; }
   h1.title { font-family: 'Fraunces', serif; font-optical-sizing: auto; font-weight: 500; font-size: clamp(2.2rem, 6.5vw, 3.6rem); margin: 0; letter-spacing: -0.01em; color: var(--wainscot); }
   .tagline { font-size: 0.92rem; color: var(--wainscot); opacity: 0.82; margin-top: 10px; max-width: 460px; margin-left: auto; margin-right: auto; line-height: 1.5; }
   .plaque { max-width: 540px; margin: 34px auto 46px; background: var(--wainscot); padding: 20px 24px; text-align: center; box-shadow: 0 12px 24px -16px rgba(0,0,0,0.5); }
@@ -55,9 +40,9 @@
   .wainscot-band { background: var(--wainscot); border-top: 6px solid #e2ded4; padding: 18px 20px 26px; display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
   .panel { flex: 1 1 160px; max-width: 260px; height: 56px; border: 2px solid #d8d3c6; border-radius: 2px; position: relative; }
   .panel::after { content: ''; position: absolute; inset: 6px; border: 1px solid #e5e1d5; }
-  .fab { position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%); background: var(--frame); color: #fff; border: none; padding: 14px 26px; border-radius: 999px; font-weight: 600; font-size: 0.9rem; cursor: pointer; box-shadow: 0 10px 24px -6px rgba(0,0,0,0.5); z-index: 40; }
+  .fab { position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%); background: var(--frame); color: #fff; border: none; padding: 14px 26px; border-radius: 999px; font-weight: 600; font-size: 0.9rem; cursor: pointer; box-shadow: 0 10px 24px -6px rgba(0,0,0,0.5); z-index: 40; font-family: inherit; }
   .fab:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
-  .overlay { position: fixed; inset: 0; background: rgba(20,16,10,0.6); display: none; align-items: flex-end; justify-content: center; z-index: 50; }
+  .overlay { position: fixed; inset: 0; background: rgba(20,16,10,0.6); display: none; align-items: flex-end; justify-content: center; z-index: 55; }
   .overlay.open { display: flex; }
   @media (min-width: 640px) { .overlay { align-items: center; } }
   .sheet { background: var(--wainscot); width: 100%; max-width: 460px; max-height: 92vh; overflow-y: auto; border-radius: 14px 14px 0 0; padding: 26px 24px 30px; }
@@ -89,37 +74,19 @@
   .detail-name { font-family: 'Fraunces', serif; font-weight: 600; font-size: 1.5rem; margin: 0 0 4px; }
   .detail-meta { font-size: 0.78rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 16px; }
   .detail-fact { font-size: 0.92rem; line-height: 1.55; background: #fff; padding: 14px 16px; border-radius: 8px; border-left: 3px solid var(--frame); }
-  .detail-close { margin-top: 20px; width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #00000022; background: transparent; color: var(--ink-soft); font-weight: 600; cursor: pointer; }
+  .detail-close { margin-top: 20px; width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #00000022; background: transparent; color: var(--ink-soft); font-weight: 600; cursor: pointer; font-family: inherit; }
 </style>
 </head>
-<body>
+<body data-page="dogwall">
 
-<!-- ============================================================
-     BOOKING WIDGET
-     Replace the src below with YOUR real Hospitable widget URL:
-     Hospitable dashboard -> Direct Bookings -> Website -> Properties
-     -> find The Confluence -> "..." menu -> Copy widget code
-     The container must stay at least 320px wide and 900px tall.
-============================================================= -->
-<div class="booking-section">
-  <h2>Book Your Stay</h2>
-  <p class="sub">Check availability and book directly — no fees, no middleman.</p>
-  <div class="widget-frame-wrap">
-    <iframe
-      id="booking-iframe"
-      sandbox="allow-top-navigation allow-scripts allow-same-origin"
-      style="width:100%; height:900px; border:0;"
-      src="https://booking.hospitable.com/widget/REPLACE-WITH-YOUR-WIDGET-ID/REPLACE-WITH-YOUR-PROPERTY-ID">
-    </iframe>
-  </div>
-</div>
+<div id="site-header"></div>
 
 <div class="dogwall-page">
   <div class="wrap">
     <div class="hero">
       <img class="logo-mark" src="confluence-house.png" alt="The Confluence house illustration">
-      <div class="eyebrow">Guest Tradition</div>
-      <h1 class="title">The Confluence</h1>
+      <div class="eyebrow-dw">Guest Tradition</div>
+      <h1 class="title">The Dog Wall</h1>
       <p class="tagline">Every dog who's stayed with us leaves a face on the wall. Add yours below.</p>
     </div>
 
@@ -170,13 +137,14 @@
   <div class="detail-sheet" id="detailSheet"></div>
 </div>
 
+<div id="site-footer"></div>
+<script src="site.js"></script>
 <script>
 // ============================================================
-// SUPABASE CONFIG — paste your own project values here
-// Find these in: Supabase dashboard -> Project Settings -> API
+// SUPABASE CONFIG — same project as book pages / admin.html
 // ============================================================
-const SUPABASE_URL = 'https://YOUR-PROJECT-REF.supabase.co';
-const SUPABASE_ANON_KEY = 'YOUR-ANON-PUBLIC-KEY';
+const SUPABASE_URL = 'https://cwzdmcvlidgtfiuekykb.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_mMM20BvCewoE4b2XGjDOHg_7QgZRWUk';
 
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -209,7 +177,6 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.classList.remove('open'); });
   detailOverlay.addEventListener('click', (e) => { if (e.target === detailOverlay) detailOverlay.classList.remove('open'); });
 
-  // ---------- Watercolor-style tile filter (client-side, no external API) ----------
   function createWatercolorTile(img, w, h){
     const canvas = document.createElement('canvas');
     canvas.width = w; canvas.height = h;

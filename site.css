@@ -1,0 +1,121 @@
+/* ============================================================
+   The Confluence — shared site styles
+   Used by every page. Edit here to change the look everywhere.
+============================================================= */
+:root{
+  --wall: #9c9184;
+  --wall-2: #948a7d;
+  --wainscot: #f4f2ee;
+  --ink: #1c1a17;
+  --ink-soft: #6b665e;
+  --frame: #171614;
+  --mat: #ffffff;
+  --river: #3e5c66;
+}
+* { box-sizing: border-box; }
+html, body { margin:0; padding:0; background:var(--wainscot); color:var(--ink); font-family:'Inter',sans-serif; }
+img { max-width:100%; }
+a { color: inherit; }
+@media (prefers-reduced-motion: reduce) { * { animation:none !important; transition:none !important; } }
+
+h1,h2,h3 { font-family:'Fraunces',serif; font-weight:500; margin:0; }
+
+/* ---------- Header / nav ---------- */
+.site-header {
+  position: sticky; top: 0; z-index: 60;
+  background: rgba(244,242,238,0.92);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid #00000012;
+}
+.site-header .inner {
+  max-width: 1120px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 20px;
+}
+.brand { display:flex; align-items:center; gap:10px; text-decoration:none; }
+.brand img { width: 34px; display:block; }
+.brand span { font-family:'Fraunces',serif; font-weight:600; font-size:1.05rem; color:var(--ink); }
+
+.nav-links { display:flex; gap:26px; align-items:center; }
+.nav-links a {
+  text-decoration:none; font-size:0.85rem; font-weight:600; color:var(--ink-soft);
+  letter-spacing:0.02em; padding:6px 2px; border-bottom:2px solid transparent;
+}
+.nav-links a:hover, .nav-links a.active { color:var(--ink); border-bottom-color: var(--frame); }
+.nav-links a.cta {
+  background: var(--frame); color:#fff; padding:9px 18px; border-radius: 999px; border-bottom:none;
+}
+.nav-links a.cta:hover { opacity:0.9; }
+
+.nav-toggle { display:none; background:none; border:none; cursor:pointer; padding:6px; }
+.nav-toggle span { display:block; width:22px; height:2px; background:var(--ink); margin:4px 0; }
+
+@media (max-width: 720px) {
+  .nav-links {
+    position: fixed; top: 60px; left:0; right:0;
+    background: var(--wainscot); flex-direction:column; align-items:flex-start;
+    padding: 16px 24px 22px; gap:16px;
+    box-shadow: 0 12px 20px -12px rgba(0,0,0,0.25);
+    display:none;
+  }
+  .nav-links.open { display:flex; }
+  .nav-links a.cta { align-self:flex-start; }
+  .nav-toggle { display:block; }
+}
+
+/* ---------- Footer ---------- */
+.site-footer {
+  background: var(--frame); color: #cfc9bd;
+  padding: 40px 20px 30px; text-align:center; margin-top: 60px;
+}
+.site-footer .brand-row { display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:10px; }
+.site-footer .brand-row img { width:30px; filter: invert(1) brightness(1.6); }
+.site-footer .brand-row span { font-family:'Fraunces',serif; font-size:1.1rem; color:#fff; }
+.site-footer p { font-size:0.8rem; margin: 4px 0; opacity:0.75; }
+.site-footer .footer-links { margin-top:14px; display:flex; gap:18px; justify-content:center; flex-wrap:wrap; }
+.site-footer .footer-links a { font-size:0.78rem; text-decoration:none; color:#cfc9bd; opacity:0.85; }
+.site-footer .footer-links a:hover { opacity:1; text-decoration:underline; }
+
+/* ---------- Shared page building blocks ---------- */
+.page-hero { max-width: 900px; margin: 0 auto; padding: 56px 20px 10px; text-align:center; }
+.page-hero .eyebrow { font-size:0.72rem; letter-spacing:0.22em; text-transform:uppercase; color:var(--river); font-weight:600; margin-bottom:12px; }
+.page-hero h1 { font-size: clamp(2rem, 5.5vw, 3.2rem); letter-spacing:-0.01em; }
+.page-hero p.sub { color:var(--ink-soft); max-width:520px; margin:14px auto 0; line-height:1.6; }
+
+.section { max-width: 1080px; margin: 0 auto; padding: 40px 20px; }
+
+.card-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap:24px; }
+.unit-card {
+  background:#fff; border-radius:12px; overflow:hidden; text-decoration:none; color:var(--ink);
+  box-shadow: 0 10px 26px -18px rgba(0,0,0,0.4); transition: transform 0.18s ease, box-shadow 0.18s ease;
+  display:flex; flex-direction:column;
+}
+.unit-card:hover { transform: translateY(-4px); box-shadow: 0 16px 32px -16px rgba(0,0,0,0.5); }
+.unit-card .thumb { aspect-ratio: 4/3; background: linear-gradient(135deg, var(--wall), var(--wall-2)); display:flex; align-items:center; justify-content:center; }
+.unit-card .thumb img { width: 60px; opacity:0.85; }
+.unit-card .card-body { padding: 20px 22px 24px; }
+.unit-card h3 { font-size:1.2rem; margin-bottom:6px; }
+.unit-card p { font-size:0.85rem; color:var(--ink-soft); line-height:1.5; margin:0; }
+.unit-card .tag { display:inline-block; font-size:0.68rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--river); font-weight:600; margin-top:10px; }
+
+.amenity-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap:16px; margin-top:24px; }
+.amenity { background:#fff; border-radius:10px; padding:16px 18px; box-shadow: 0 6px 16px -12px rgba(0,0,0,0.3); }
+.amenity .label { font-size:0.68rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--ink-soft); font-weight:600; margin-bottom:4px; }
+.amenity .value { font-size:0.95rem; font-weight:500; }
+
+.btn-primary {
+  display:inline-block; background:var(--frame); color:#fff; text-decoration:none;
+  padding:13px 28px; border-radius:999px; font-weight:600; font-size:0.9rem; margin-top:24px;
+}
+.btn-primary:hover { opacity:0.9; }
+
+.placeholder-note {
+  background: #fff7e6; border:1px solid #e8d5a0; color:#6b5320; font-size:0.78rem;
+  padding:10px 14px; border-radius:8px; margin: 18px auto; max-width: 700px;
+}
+
+.widget-frame-wrap { min-width:320px; min-height:900px; border:1px solid #00000014; border-radius:8px; overflow:hidden; background:#fff; }
+
+.faq-item { border-bottom:1px solid #00000014; padding: 18px 0; }
+.faq-item summary { font-weight:600; cursor:pointer; font-size:1rem; }
+.faq-item p { color:var(--ink-soft); margin-top:10px; line-height:1.6; font-size:0.92rem; }
