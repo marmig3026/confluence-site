@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Confluence — Pittsburgh</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root{
+    --wall: #9c9184; --wall-2: #948a7d; --wainscot: #f4f2ee;
+    --ink: #1c1a17; --ink-soft: #6b665e; --frame: #171614; --mat: #ffffff;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--wainscot); color: var(--ink); font-family: 'Inter', sans-serif; }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+  img { max-width: 100%; }
+
+  /* ---------- Booking section ---------- */
+  .booking-section { max-width: 900px; margin: 0 auto; padding: 56px 20px 20px; text-align: center; }
+  .booking-section h2 { font-family: 'Fraunces', serif; font-weight: 500; font-size: 2rem; margin: 0 0 8px; }
+  .booking-section p.sub { color: var(--ink-soft); margin: 0 0 28px; }
+  .widget-frame-wrap { min-width: 320px; min-height: 900px; border: 1px solid #00000014; border-radius: 8px; overflow: hidden; background: #fff; }
+
+  /* ---------- Dog wall (same design as the prototype) ---------- */
+  .dogwall-page { background: linear-gradient(180deg, var(--wall) 0%, var(--wall-2) 100%); margin-top: 60px; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 44px 20px 0; }
+  .hero { text-align: center; margin-bottom: 6px; }
+  .logo-mark { width: 92px; margin: 0 auto 18px; display: block; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.15)); }
+  .eyebrow { font-size: 0.7rem; letter-spacing: 0.24em; text-transform: uppercase; color: var(--wainscot); opacity: 0.75; font-weight: 600; margin-bottom: 10px; }
+  h1.title { font-family: 'Fraunces', serif; font-optical-sizing: auto; font-weight: 500; font-size: clamp(2.2rem, 6.5vw, 3.6rem); margin: 0; letter-spacing: -0.01em; color: var(--wainscot); }
+  .tagline { font-size: 0.92rem; color: var(--wainscot); opacity: 0.82; margin-top: 10px; max-width: 460px; margin-left: auto; margin-right: auto; line-height: 1.5; }
+  .plaque { max-width: 540px; margin: 34px auto 46px; background: var(--wainscot); padding: 20px 24px; text-align: center; box-shadow: 0 12px 24px -16px rgba(0,0,0,0.5); }
+  .plaque p { margin: 0; font-size: 0.86rem; line-height: 1.6; color: var(--ink-soft); }
+  .plaque strong { color: var(--ink); font-weight: 600; }
+  .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 34px 20px; padding: 10px 4px 60px; align-items: start; }
+  .frame-slot.large { grid-column: span 2; }
+  @media (max-width: 480px) { .gallery { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); } }
+  .frame-slot:not(.empty) { cursor: pointer; }
+  .frame-outer { background: var(--frame); padding: 8px; box-shadow: 0 8px 18px -8px rgba(0,0,0,0.5); transition: transform 0.18s ease, box-shadow 0.18s ease; }
+  .frame-slot:not(.empty):hover .frame-outer, .frame-slot:not(.empty):focus-visible .frame-outer { transform: scale(1.05); box-shadow: 0 16px 30px -10px rgba(0,0,0,0.6); }
+  .frame-mat { background: var(--mat); padding: 10px; }
+  .frame-photo { width: 100%; aspect-ratio: 5/4; overflow: hidden; background: #e8e5df; display: flex; align-items: center; justify-content: center; }
+  .frame-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .frame-photo.ghost { color: var(--ink-soft); font-size: 0.72rem; text-align: center; padding: 8px; line-height: 1.4; }
+  .caption { margin-top: 10px; text-align: center; }
+  .cap-name { font-family: 'Fraunces', serif; font-weight: 600; font-size: 0.78rem; letter-spacing: 0.03em; text-transform: uppercase; color: var(--wainscot); }
+  .cap-meta { font-size: 0.6rem; letter-spacing: 0.09em; text-transform: uppercase; color: var(--wainscot); opacity: 0.75; margin-top: 4px; }
+  .frame-slot.empty .frame-outer { background: transparent; box-shadow: none; border: 1.5px dashed rgba(255,255,255,0.35); }
+  .frame-slot.empty .frame-mat { background: rgba(255,255,255,0.06); }
+  .frame-slot.empty .cap-name { opacity: 0.7; font-family: 'Inter', sans-serif; text-transform: none; letter-spacing: 0; font-weight: 500; }
+  .status-line { text-align: center; color: var(--wainscot); opacity: 0.8; font-size: 0.85rem; padding: 24px; }
+  .wainscot-band { background: var(--wainscot); border-top: 6px solid #e2ded4; padding: 18px 20px 26px; display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+  .panel { flex: 1 1 160px; max-width: 260px; height: 56px; border: 2px solid #d8d3c6; border-radius: 2px; position: relative; }
+  .panel::after { content: ''; position: absolute; inset: 6px; border: 1px solid #e5e1d5; }
+  .fab { position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%); background: var(--frame); color: #fff; border: none; padding: 14px 26px; border-radius: 999px; font-weight: 600; font-size: 0.9rem; cursor: pointer; box-shadow: 0 10px 24px -6px rgba(0,0,0,0.5); z-index: 40; }
+  .fab:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+  .overlay { position: fixed; inset: 0; background: rgba(20,16,10,0.6); display: none; align-items: flex-end; justify-content: center; z-index: 50; }
+  .overlay.open { display: flex; }
+  @media (min-width: 640px) { .overlay { align-items: center; } }
+  .sheet { background: var(--wainscot); width: 100%; max-width: 460px; max-height: 92vh; overflow-y: auto; border-radius: 14px 14px 0 0; padding: 26px 24px 30px; }
+  @media (min-width: 640px) { .sheet { border-radius: 10px; } }
+  .sheet h2 { font-family: 'Fraunces', serif; font-weight: 500; font-size: 1.4rem; margin: 0 0 4px; }
+  .sheet .sub { color: var(--ink-soft); font-size: 0.82rem; margin-bottom: 20px; }
+  label { display: block; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-soft); margin: 16px 0 6px; }
+  label:first-of-type { margin-top: 0; }
+  input[type="text"], input[type="month"], textarea { width: 100%; padding: 11px 12px; border: 1px solid #00000022; border-radius: 6px; font-size: 0.95rem; background: #fff; color: var(--ink); font-family: inherit; }
+  textarea { resize: vertical; min-height: 56px; }
+  .photo-picker { border: 1.5px dashed #00000030; border-radius: 8px; padding: 18px; text-align: center; cursor: pointer; background: #ffffffa0; }
+  .photo-picker input { display: none; }
+  .photo-picker .ppt { font-size: 0.85rem; color: var(--ink-soft); }
+  .preview-wrap { margin-top: 10px; display: none; }
+  .preview-wrap.show { display: block; }
+  .preview-wrap img { width: 100%; max-height: 220px; object-fit: cover; border-radius: 8px; }
+  .btn-row { display: flex; gap: 10px; margin-top: 24px; }
+  .btn { flex: 1; padding: 12px; border-radius: 8px; border: none; font-weight: 600; font-size: 0.9rem; cursor: pointer; font-family: inherit; }
+  .btn-cancel { background: transparent; color: var(--ink-soft); border: 1px solid #00000022; }
+  .btn-submit { background: var(--frame); color: #fff; }
+  .btn-submit:disabled { opacity: 0.55; }
+  .err-banner { background: #7a2d2d15; border: 1px solid #7a2d2d33; color: #7a2d2d; font-size: 0.8rem; padding: 10px 12px; border-radius: 6px; margin-top: 14px; display: none; }
+  .err-banner.show { display: block; }
+  .detail-sheet { background: var(--wainscot); width: 100%; max-width: 480px; max-height: 92vh; overflow-y: auto; border-radius: 14px 14px 0 0; }
+  @media (min-width: 640px) { .detail-sheet { border-radius: 10px; } }
+  .detail-photo { width: 100%; aspect-ratio: 4/3; overflow: hidden; }
+  .detail-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .detail-body { padding: 22px 24px 28px; }
+  .detail-name { font-family: 'Fraunces', serif; font-weight: 600; font-size: 1.5rem; margin: 0 0 4px; }
+  .detail-meta { font-size: 0.78rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 16px; }
+  .detail-fact { font-size: 0.92rem; line-height: 1.55; background: #fff; padding: 14px 16px; border-radius: 8px; border-left: 3px solid var(--frame); }
+  .detail-close { margin-top: 20px; width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #00000022; background: transparent; color: var(--ink-soft); font-weight: 600; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     BOOKING WIDGET
+     Replace the src below with YOUR real Hospitable widget URL:
+     Hospitable dashboard -> Direct Bookings -> Website -> Properties
+     -> find The Confluence -> "..." menu -> Copy widget code
+     The container must stay at least 320px wide and 900px tall.
+============================================================= -->
+<div class="booking-section">
+  <h2>Book Your Stay</h2>
+  <p class="sub">Check availability and book directly — no fees, no middleman.</p>
+  <div class="widget-frame-wrap">
+    <iframe
+      id="booking-iframe"
+      sandbox="allow-top-navigation allow-scripts allow-same-origin"
+      style="width:100%; height:900px; border:0;"
+      src="https://booking.hospitable.com/widget/REPLACE-WITH-YOUR-WIDGET-ID/REPLACE-WITH-YOUR-PROPERTY-ID">
+    </iframe>
+  </div>
+</div>
+
+<div class="dogwall-page">
+  <div class="wrap">
+    <div class="hero">
+      <img class="logo-mark" src="confluence-house.png" alt="The Confluence house illustration">
+      <div class="eyebrow">Guest Tradition</div>
+      <h1 class="title">The Confluence</h1>
+      <p class="tagline">Every dog who's stayed with us leaves a face on the wall. Add yours below.</p>
+    </div>
+
+    <div class="plaque">
+      <p><strong>Add your dog to the wall.</strong> Tap the button below, snap a photo, and your pup joins the hallway gallery. Submissions are reviewed before they go live.</p>
+    </div>
+
+    <div id="gallery" class="gallery" aria-live="polite"></div>
+    <div id="statusLine" class="status-line" style="display:none;"></div>
+  </div>
+
+  <div class="wainscot-band">
+    <div class="panel"></div><div class="panel"></div><div class="panel"></div>
+  </div>
+</div>
+
+<button class="fab" id="openAdd">+ Add your dog</button>
+
+<div class="overlay" id="overlay">
+  <div class="sheet">
+    <h2>Add your dog</h2>
+    <div class="sub">Your photo will be reviewed before it joins the wall.</div>
+    <form id="dogForm">
+      <label for="dogNames">Dog's name(s)</label>
+      <input type="text" id="dogNames" maxlength="50" placeholder="e.g. Orion, Teddy, &amp; Remi">
+      <label for="dogLocation">Where are you visiting from?</label>
+      <input type="text" id="dogLocation" maxlength="40" placeholder="e.g. Carrollton, OH">
+      <label for="dogWhen">When did you stay?</label>
+      <input type="month" id="dogWhen">
+      <label for="dogFact">A fun fact about them (optional)</label>
+      <textarea id="dogFact" maxlength="140" placeholder="e.g. Can do a backflip for a treat"></textarea>
+      <label>Photo</label>
+      <label class="photo-picker" id="pickerLabel">
+        <input type="file" id="dogPhoto" accept="image/*" capture="environment">
+        <div class="ppt" id="pickerText">Tap to take or choose a photo</div>
+      </label>
+      <div class="preview-wrap" id="previewWrap"><img id="previewImg" alt=""></div>
+      <div class="err-banner" id="errBanner"></div>
+      <div class="btn-row">
+        <button type="button" class="btn btn-cancel" id="cancelBtn">Cancel</button>
+        <button type="submit" class="btn btn-submit" id="submitBtn">Submit for review</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="overlay" id="detailOverlay">
+  <div class="detail-sheet" id="detailSheet"></div>
+</div>
+
+<script>
+// ============================================================
+// SUPABASE CONFIG — paste your own project values here
+// Find these in: Supabase dashboard -> Project Settings -> API
+// ============================================================
+const SUPABASE_URL = 'https://YOUR-PROJECT-REF.supabase.co';
+const SUPABASE_ANON_KEY = 'YOUR-ANON-PUBLIC-KEY';
+
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+(function(){
+  const gallery = document.getElementById('gallery');
+  const statusLine = document.getElementById('statusLine');
+  const overlay = document.getElementById('overlay');
+  const openAdd = document.getElementById('openAdd');
+  const cancelBtn = document.getElementById('cancelBtn');
+  const form = document.getElementById('dogForm');
+  const photoInput = document.getElementById('dogPhoto');
+  const pickerText = document.getElementById('pickerText');
+  const previewWrap = document.getElementById('previewWrap');
+  const previewImg = document.getElementById('previewImg');
+  const errBanner = document.getElementById('errBanner');
+  const submitBtn = document.getElementById('submitBtn');
+  const detailOverlay = document.getElementById('detailOverlay');
+  const detailSheet = document.getElementById('detailSheet');
+
+  let pendingImageBase64 = null;
+  let pendingTileBase64 = null;
+  let currentEntries = [];
+
+  function showError(msg){ errBanner.textContent = msg; errBanner.classList.add('show'); }
+  function clearError(){ errBanner.classList.remove('show'); errBanner.textContent = ''; }
+  function escapeHtml(str){ const d = document.createElement('div'); d.textContent = str || ''; return d.innerHTML; }
+
+  openAdd.addEventListener('click', () => overlay.classList.add('open'));
+  cancelBtn.addEventListener('click', () => overlay.classList.remove('open'));
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.classList.remove('open'); });
+  detailOverlay.addEventListener('click', (e) => { if (e.target === detailOverlay) detailOverlay.classList.remove('open'); });
+
+  // ---------- Watercolor-style tile filter (client-side, no external API) ----------
+  function createWatercolorTile(img, w, h){
+    const canvas = document.createElement('canvas');
+    canvas.width = w; canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    ctx.filter = 'blur(3px) saturate(1.3) contrast(0.92) brightness(1.05)';
+    ctx.drawImage(img, 0, 0, w, h);
+    ctx.filter = 'none';
+    const imgData = ctx.getImageData(0, 0, w, h);
+    const d = imgData.data;
+    const levels = 40;
+    for (let i = 0; i < d.length; i += 4) {
+      d[i]   = Math.min(255, Math.round(d[i]   / levels) * levels);
+      d[i+1] = Math.min(255, Math.round(d[i+1] / levels) * levels);
+      d[i+2] = Math.min(255, Math.round(d[i+2] / levels) * levels);
+    }
+    ctx.putImageData(imgData, 0, 0);
+    ctx.globalCompositeOperation = 'overlay';
+    ctx.globalAlpha = 0.05;
+    const grainCount = Math.floor((w * h) / 700);
+    for (let i = 0; i < grainCount; i++) {
+      const gx = Math.random() * w, gy = Math.random() * h;
+      const shade = Math.random() > 0.5 ? '255,255,255' : '0,0,0';
+      ctx.fillStyle = 'rgba(' + shade + ',1)';
+      ctx.fillRect(gx, gy, 1.3, 1.3);
+    }
+    ctx.globalAlpha = 1;
+    ctx.globalCompositeOperation = 'source-over';
+    const grad = ctx.createRadialGradient(w/2, h/2, Math.min(w,h)*0.32, w/2, h/2, Math.min(w,h)*0.72);
+    grad.addColorStop(0, 'rgba(250,247,240,0)');
+    grad.addColorStop(1, 'rgba(250,247,240,0.4)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, w, h);
+    return canvas.toDataURL('image/jpeg', 0.82);
+  }
+
+  function dataURLtoBlob(dataurl){
+    const arr = dataurl.split(',');
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) u8arr[n] = bstr.charCodeAt(n);
+    return new Blob([u8arr], { type: mime });
+  }
+
+  photoInput.addEventListener('change', () => {
+    clearError();
+    const file = photoInput.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const maxDim = 900;
+        let w = img.width, h = img.height;
+        if (w > h && w > maxDim) { h = Math.round(h * (maxDim / w)); w = maxDim; }
+        else if (h > maxDim) { w = Math.round(w * (maxDim / h)); h = maxDim; }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        pendingImageBase64 = canvas.toDataURL('image/jpeg', 0.78);
+        try { pendingTileBase64 = createWatercolorTile(img, w, h); }
+        catch (styleErr) { pendingTileBase64 = pendingImageBase64; }
+        previewImg.src = pendingImageBase64;
+        previewWrap.classList.add('show');
+        pickerText.textContent = 'Tap to choose a different photo';
+      };
+      img.onerror = () => showError("That image couldn't be read. Try a different photo.");
+      img.src = e.target.result;
+    };
+    reader.onerror = () => showError("That image couldn't be read. Try a different photo.");
+    reader.readAsDataURL(file);
+  });
+
+  function formatMonth(val){
+    if (!val) return '';
+    const [y, m] = val.split('-').map(Number);
+    return new Date(y, m - 1, 1).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    clearError();
+    const names = document.getElementById('dogNames').value.trim();
+    const location = document.getElementById('dogLocation').value.trim();
+    const whenRaw = document.getElementById('dogWhen').value;
+    const funFact = document.getElementById('dogFact').value.trim();
+
+    if (!names) { showError("Give your dog a name to add them to the wall."); return; }
+    if (!location) { showError("Let us know where you're visiting from."); return; }
+    if (!whenRaw) { showError("Let us know when you stayed."); return; }
+    if (!pendingImageBase64) { showError("Add a photo before submitting."); return; }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting...';
+
+    try {
+      const id = crypto.randomUUID();
+      const realBlob = dataURLtoBlob(pendingImageBase64);
+      const tileBlob = dataURLtoBlob(pendingTileBase64);
+
+      const { error: upErr1 } = await supabase.storage.from('dog-photos').upload(`real/${id}.jpg`, realBlob, { contentType: 'image/jpeg' });
+      if (upErr1) throw upErr1;
+      const { error: upErr2 } = await supabase.storage.from('dog-photos').upload(`tile/${id}.jpg`, tileBlob, { contentType: 'image/jpeg' });
+      if (upErr2) throw upErr2;
+
+      const { data: realUrlData } = supabase.storage.from('dog-photos').getPublicUrl(`real/${id}.jpg`);
+      const { data: tileUrlData } = supabase.storage.from('dog-photos').getPublicUrl(`tile/${id}.jpg`);
+
+      const { error: insertErr } = await supabase.from('dog_wall').insert({
+        names, location, when_stayed: formatMonth(whenRaw), fun_fact: funFact || null,
+        image_url: realUrlData.publicUrl, tile_image_url: tileUrlData.publicUrl, status: 'pending'
+      });
+      if (insertErr) throw insertErr;
+
+      overlay.classList.remove('open');
+      form.reset();
+      previewWrap.classList.remove('show');
+      pickerText.textContent = 'Tap to take or choose a photo';
+      pendingImageBase64 = null;
+      pendingTileBase64 = null;
+      statusLine.style.display = 'block';
+      statusLine.textContent = 'Thanks! Your submission is awaiting approval.';
+      setTimeout(() => { if (currentEntries.length) statusLine.style.display = 'none'; }, 3500);
+    } catch (err) {
+      showError("Couldn't submit right now — check your connection and try again.");
+      console.error(err);
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Submit for review';
+    }
+  });
+
+  function frameHTML(entry, idx){
+    const large = (idx % 6 === 0) ? ' large' : '';
+    return `
+      <div class="frame-slot${large}" data-idx="${idx}" tabindex="0" role="button" aria-label="View ${escapeHtml(entry.names)}">
+        <div class="frame-outer"><div class="frame-mat"><div class="frame-photo"><img src="${entry.tile_image_url || entry.image_url}" alt="${escapeHtml(entry.names)}"></div></div></div>
+        <div class="caption">
+          <div class="cap-name">${escapeHtml(entry.names)}</div>
+          <div class="cap-meta">${escapeHtml(entry.location)} &middot; ${escapeHtml(entry.when_stayed)}</div>
+        </div>
+      </div>`;
+  }
+  function ghostFrameHTML(text){
+    return `<div class="frame-slot empty"><div class="frame-outer"><div class="frame-mat"><div class="frame-photo ghost">${text}</div></div></div><div class="caption"><div class="cap-name">&nbsp;</div></div></div>`;
+  }
+  function openDetail(entry){
+    detailSheet.innerHTML = `
+      <div class="detail-photo"><img src="${entry.image_url}" alt="${escapeHtml(entry.names)}"></div>
+      <div class="detail-body">
+        <div class="detail-name">${escapeHtml(entry.names)}</div>
+        <div class="detail-meta">${escapeHtml(entry.location)} &middot; ${escapeHtml(entry.when_stayed)}</div>
+        ${entry.fun_fact ? `<div class="detail-fact">${escapeHtml(entry.fun_fact)}</div>` : ''}
+        <button class="detail-close" id="detailCloseBtn">Close</button>
+      </div>`;
+    detailOverlay.classList.add('open');
+    document.getElementById('detailCloseBtn').addEventListener('click', () => detailOverlay.classList.remove('open'));
+  }
+  gallery.addEventListener('click', (e) => {
+    const slot = e.target.closest('.frame-slot:not(.empty)');
+    if (!slot) return;
+    const idx = parseInt(slot.dataset.idx, 10);
+    if (currentEntries[idx]) openDetail(currentEntries[idx]);
+  });
+  gallery.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    const slot = e.target.closest('.frame-slot:not(.empty)');
+    if (!slot) return;
+    e.preventDefault();
+    const idx = parseInt(slot.dataset.idx, 10);
+    if (currentEntries[idx]) openDetail(currentEntries[idx]);
+  });
+
+  async function loadWall(){
+    statusLine.style.display = 'block';
+    statusLine.textContent = 'Hanging the wall...';
+    gallery.innerHTML = '';
+    try {
+      const { data, error } = await supabase.from('dog_wall').select('*').eq('status', 'approved').order('created_at', { ascending: false });
+      if (error) throw error;
+      if (!data || data.length === 0) {
+        statusLine.style.display = 'none';
+        currentEntries = [];
+        gallery.innerHTML = ghostFrameHTML('Be the first face<br>on the wall') + ghostFrameHTML('This spot is<br>waiting for you') + ghostFrameHTML('Scan. Snap.<br>Say hello.');
+        return;
+      }
+      currentEntries = data;
+      statusLine.style.display = 'none';
+      gallery.innerHTML = data.map(frameHTML).join('');
+    } catch (err) {
+      statusLine.textContent = "Couldn't load the wall right now. Check your Supabase config.";
+      console.error(err);
+    }
+  }
+
+  loadWall();
+})();
+</script>
+</body>
+</html>
