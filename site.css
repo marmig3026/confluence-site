@@ -73,7 +73,7 @@ h1,h2,h3 { font-family:'Fraunces',serif; font-weight:500; margin:0; }
 .site-footer .brand-row span { font-family:'Fraunces',serif; font-size:1.1rem; color:#fff; }
 .site-footer p { font-size:0.8rem; margin: 4px 0; opacity:0.75; }
 .site-footer .footer-links { margin-top:14px; display:flex; gap:18px; justify-content:center; flex-wrap:wrap; }
-.site-footer .footer-links a { font-size:0.78rem; text-decoration:none; color:#cfc9bd; opacity:0.85; }
+.site-footer .footer-links a { font-size:0.7rem; text-decoration:none; color:#cfc9bd; opacity:0.85; }
 .site-footer .footer-links a:hover { opacity:1; text-decoration:underline; }
 
 /* ---------- Shared page building blocks ---------- */
@@ -98,6 +98,10 @@ h1,h2,h3 { font-family:'Fraunces',serif; font-weight:500; margin:0; }
 .unit-card p { font-size:0.85rem; color:var(--ink-soft); line-height:1.5; margin:0; }
 .unit-card .tag { display:inline-block; font-size:0.68rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--river); font-weight:600; margin-top:10px; }
 
+.unit-stats { display:flex; gap:26px; margin: 8px 0 18px; }
+.unit-stats .stat { display:flex; align-items:center; gap:6px; color:var(--ink-soft); font-size:0.7rem; font-weight:500; }
+.unit-stats svg { color:var(--ink-soft); flex-shrink:0; }
+
 .amenity-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap:16px; margin-top:24px; }
 .amenity { background:#fff; border-radius:10px; padding:16px 18px; box-shadow: 0 6px 16px -12px rgba(0,0,0,0.3); }
 .amenity .label { font-size:0.68rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--ink-soft); font-weight:600; margin-bottom:4px; }
@@ -110,7 +114,7 @@ h1,h2,h3 { font-family:'Fraunces',serif; font-weight:500; margin:0; }
 .btn-primary:hover { opacity:0.9; }
 
 .placeholder-note {
-  background: #fff7e6; border:1px solid #e8d5a0; color:#6b5320; font-size:0.78rem;
+  background: #fff7e6; border:1px solid #e8d5a0; color:#6b5320; font-size:0.7 rem;
   padding:10px 14px; border-radius:8px; margin: 18px auto; max-width: 700px;
 }
 
