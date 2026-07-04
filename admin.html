@@ -20,11 +20,9 @@
   label { display:block; font-size:0.72rem; font-weight:600; letter-spacing:0.04em; text-transform:uppercase; color:var(--ink-soft); margin:16px 0 6px; }
   label:first-of-type { margin-top:0; }
   input, textarea { width:100%; padding:11px 12px; border:1px solid #00000022; border-radius:6px; font-size:0.95rem; font-family:inherit; }
-  textarea { resize: vertical; min-height: 56px; }
+  textarea { resize: vertical; min-height: 80px; }
   .btn { width:100%; margin-top:20px; padding:12px; border-radius:8px; border:none; background:var(--frame); color:#fff; font-weight:600; font-size:0.9rem; cursor:pointer; font-family:inherit; }
   .btn:disabled { opacity:0.55; }
-  .btn-sm { width:auto; margin-top:0; padding:9px 16px; font-size:0.8rem; }
-  .btn-secondary { background:transparent; color:var(--ink-soft); border:1px solid #00000022; }
   .err { color:#7a2d2d; font-size:0.82rem; margin-top:12px; display:none; }
   .err.show { display:block; }
   .ok { color:#2d5a3d; font-size:0.82rem; margin-top:12px; display:none; }
@@ -46,7 +44,7 @@
   .no-tile { width:72px; height:72px; border-radius:8px; border:1.5px dashed #00000030; display:flex; align-items:center; justify-content:center; font-size:0.6rem; color:var(--ink-soft); text-align:center; padding:4px; }
   .rdetails { flex:1; font-size:0.85rem; color:var(--ink-soft); min-width:0; }
   .rdetails strong { color:var(--ink); display:block; font-size:0.95rem; margin-bottom:2px; }
-  .fact { margin-top:6px; font-style: italic; }
+  .fact { margin-top:6px; font-style: italic; white-space: pre-wrap; }
   .actions { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
   .actions button { font-size:0.78rem; padding:7px 14px; border-radius:6px; border:none; cursor:pointer; font-weight:600; font-family:inherit; }
   .approve { background:#2d5a3d; color:#fff; }
@@ -57,17 +55,26 @@
 
   .add-panel, .edit-panel { background:#fff; border-radius:10px; padding:20px 22px 24px; margin-bottom:24px; box-shadow:0 4px 14px -10px rgba(0,0,0,0.3); }
   .photo-row { display:flex; gap:14px; flex-wrap:wrap; }
-  .photo-row > div { flex:1; min-width:180px; }
-  .photo-picker { border: 1.5px dashed #00000030; border-radius: 8px; padding: 14px; text-align: center; cursor: pointer; background: #fafafa; }
+  .photo-row > div { flex:1; min-width:200px; }
+
+  .photo-picker { border: 1.5px dashed #00000030; border-radius: 8px; padding: 14px; text-align: center; cursor: pointer; background: #fafafa; transition: background 0.15s ease, border-color 0.15s ease; }
+  .photo-picker.dragover { background: #fff; border-color: var(--frame); }
   .photo-picker input { display:none; }
   .photo-picker .ppt { font-size: 0.8rem; color: var(--ink-soft); }
-  .preview-wrap { margin-top: 8px; display:none; }
-  .preview-wrap.show { display:block; }
-  .preview-wrap img { width:100%; max-height:140px; object-fit:cover; border-radius:8px; }
 
-  .watercolor-inline { margin-top:10px; }
-  .watercolor-inline label.photo-picker { padding:10px; }
-  .watercolor-inline .preview-wrap img { max-height:90px; }
+  .preview-grid { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
+  .preview-thumb { position:relative; width:64px; height:64px; border-radius:8px; overflow:hidden; flex-shrink:0; }
+  .preview-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
+  .preview-thumb .remove-x {
+    position:absolute; top:2px; right:2px; width:18px; height:18px;
+    background:rgba(0,0,0,0.65); color:#fff; border:none; border-radius:50%;
+    font-size:12px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center;
+  }
+  .preview-thumb .remove-x:hover { background:rgba(0,0,0,0.85); }
+  .preview-thumb.is-new::after {
+    content:'new'; position:absolute; bottom:0; left:0; right:0; background:rgba(45,90,61,0.85); color:#fff;
+    font-size:0.55rem; text-align:center; padding:1px 0; text-transform:uppercase; letter-spacing:0.04em;
+  }
 </style>
 </head>
 <body>
@@ -99,7 +106,6 @@
     </div>
   </div>
 
-  <!-- Add a dog directly (skips moderation queue) -->
   <div class="add-panel hidden" id="addPanel">
     <h2 style="font-size:1.1rem; margin:0 0 4px;">Add a dog who's already stayed</h2>
     <div class="sub" style="margin-bottom:16px;">This goes straight to the public wall — no review step.</div>
@@ -111,23 +117,23 @@
       <label for="addWhen">When did they stay?</label>
       <input type="month" id="addWhen">
       <label for="addFact">A fun fact (optional)</label>
-      <textarea id="addFact" maxlength="140" placeholder="e.g. Can do a backflip for a treat"></textarea>
+      <textarea id="addFact" maxlength="500" placeholder="e.g. Can do a backflip for a treat"></textarea>
 
       <label>Photos</label>
       <div class="photo-row">
         <div>
           <label class="photo-picker" id="addOrigLabel">
             <input type="file" id="addOrigPhoto" accept="image/*" multiple>
-            <div class="ppt" id="addOrigText">Original photo(s) — you can select more than one</div>
+            <div class="ppt">Original photo(s) — click or drag &amp; drop, you can select more than one</div>
           </label>
-          <div class="preview-wrap" id="addOrigPreviewWrap"><img id="addOrigPreviewImg" alt=""></div>
+          <div class="preview-grid" id="addOrigPreviewGrid"></div>
         </div>
         <div>
           <label class="photo-picker" id="addWaterLabel">
             <input type="file" id="addWaterPhoto" accept="image/*">
-            <div class="ppt" id="addWaterText">Watercolor photo (optional)</div>
+            <div class="ppt">Watercolor photo (optional) — click or drag &amp; drop</div>
           </label>
-          <div class="preview-wrap" id="addWaterPreviewWrap"><img id="addWaterPreviewImg" alt=""></div>
+          <div class="preview-grid" id="addWaterPreviewGrid"></div>
         </div>
       </div>
 
@@ -167,8 +173,9 @@ const addOk = document.getElementById('addOk');
 const addSubmitBtn = document.getElementById('addSubmitBtn');
 
 function escapeHtml(str){ const d = document.createElement('div'); d.textContent = str || ''; return d.innerHTML; }
+function uid(){ return crypto.randomUUID(); }
 
-function readAndResize(file, maxDim){
+function resizeFile(file, maxDim){
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -209,48 +216,46 @@ async function uploadPhoto(dataUrl, folder, id){
   return data.publicUrl;
 }
 
-function wirePhotoPicker(inputId, previewWrapId, previewImgId, pickerTextId, onReady){
-  const input = document.getElementById(inputId);
-  const previewWrap = document.getElementById(previewWrapId);
-  const previewImg = document.getElementById(previewImgId);
-  const pickerText = document.getElementById(pickerTextId);
-  let dataUrl = null;
-  input.addEventListener('change', async () => {
-    const file = input.files[0];
-    if (!file) return;
-    dataUrl = await readAndResize(file, 900);
-    previewImg.src = dataUrl;
-    previewWrap.classList.add('show');
-    pickerText.textContent = 'Tap to choose a different photo';
-    onReady(dataUrl);
-  });
-  return {
-    reset(){ dataUrl = null; input.value = ''; previewWrap.classList.remove('show'); },
-    get(){ return dataUrl; }
-  };
-}
+// Wires a picker label as both a click-to-choose AND drag-and-drop target.
+// `multi` controls whether more than one file can accumulate.
+// Returns { getAll(), reset() } — getAll() returns array of data URLs.
+function wirePicker(labelEl, inputEl, gridEl, multi){
+  let photos = []; // { id, dataUrl }
 
-// Like wirePhotoPicker, but accepts multiple files at once (used for
-// Mali & Penny style entries that want more than one original photo).
-function wireMultiPhotoPicker(inputId, previewWrapId, previewImgId, pickerTextId){
-  const input = document.getElementById(inputId);
-  const previewWrap = document.getElementById(previewWrapId);
-  const previewImg = document.getElementById(previewImgId);
-  const pickerText = document.getElementById(pickerTextId);
-  let dataUrls = [];
-  input.addEventListener('change', async () => {
-    const files = Array.from(input.files || []);
-    if (files.length === 0) return;
-    dataUrls = await Promise.all(files.map(f => readAndResize(f, 900)));
-    previewImg.src = dataUrls[0];
-    previewWrap.classList.add('show');
-    pickerText.textContent = dataUrls.length > 1
-      ? `${dataUrls.length} photos selected — tap to change`
-      : '1 photo selected — tap to change';
+  function render(){
+    gridEl.innerHTML = photos.map(p => `
+      <div class="preview-thumb" data-id="${p.id}">
+        <img src="${p.dataUrl}" alt="">
+        <button type="button" class="remove-x" data-remove="${p.id}">&times;</button>
+      </div>`).join('');
+  }
+  gridEl.addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-remove]');
+    if (!btn) return;
+    photos = photos.filter(p => p.id !== btn.dataset.remove);
+    render();
   });
+
+  async function addFiles(fileList){
+    const files = Array.from(fileList || []).filter(f => f.type.startsWith('image/'));
+    if (files.length === 0) return;
+    if (!multi) photos = [];
+    for (const file of files) {
+      const dataUrl = await resizeFile(file, 900);
+      photos.push({ id: uid(), dataUrl });
+      if (!multi) break;
+    }
+    render();
+  }
+
+  inputEl.addEventListener('change', () => { addFiles(inputEl.files); inputEl.value = ''; });
+  ['dragover','dragenter'].forEach(evt => labelEl.addEventListener(evt, (e) => { e.preventDefault(); labelEl.classList.add('dragover'); }));
+  ['dragleave','dragend'].forEach(evt => labelEl.addEventListener(evt, () => labelEl.classList.remove('dragover')));
+  labelEl.addEventListener('drop', (e) => { e.preventDefault(); labelEl.classList.remove('dragover'); addFiles(e.dataTransfer.files); });
+
   return {
-    reset(){ dataUrls = []; input.value = ''; previewWrap.classList.remove('show'); pickerText.textContent = 'Original photo(s) — you can select more than one'; },
-    get(){ return dataUrls; }
+    getAll(){ return photos.map(p => p.dataUrl); },
+    reset(){ photos = []; render(); }
   };
 }
 
@@ -303,8 +308,12 @@ tabs.forEach(btn => {
 toggleAddBtn.addEventListener('click', () => addPanel.classList.toggle('hidden'));
 
 // ---------- Add a dog directly ----------
-const addOrigPicker = wireMultiPhotoPicker('addOrigPhoto', 'addOrigPreviewWrap', 'addOrigPreviewImg', 'addOrigText');
-const addWaterPicker = wirePhotoPicker('addWaterPhoto', 'addWaterPreviewWrap', 'addWaterPreviewImg', 'addWaterText', () => {});
+const addOrigPicker = wirePicker(
+  document.getElementById('addOrigLabel'), document.getElementById('addOrigPhoto'), document.getElementById('addOrigPreviewGrid'), true
+);
+const addWaterPicker = wirePicker(
+  document.getElementById('addWaterLabel'), document.getElementById('addWaterPhoto'), document.getElementById('addWaterPreviewGrid'), false
+);
 
 addForm.addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -315,8 +324,8 @@ addForm.addEventListener('submit', async (e) => {
   const location = document.getElementById('addLocation').value.trim();
   const whenRaw = document.getElementById('addWhen').value;
   const funFact = document.getElementById('addFact').value.trim();
-  const origDataList = addOrigPicker.get(); // array of data URLs, at least 1 required
-  const waterData = addWaterPicker.get();
+  const origDataList = addOrigPicker.getAll();
+  const waterDataList = addWaterPicker.getAll();
 
   if (!names || !location || !whenRaw || origDataList.length === 0) {
     addErr.textContent = 'Fill in the name, location, date, and at least one original photo.';
@@ -329,10 +338,8 @@ addForm.addEventListener('submit', async (e) => {
 
   try {
     const origUrls = [];
-    for (const dataUrl of origDataList) {
-      origUrls.push(await uploadPhoto(dataUrl, 'real', crypto.randomUUID()));
-    }
-    const tileUrl = waterData ? await uploadPhoto(waterData, 'tile', crypto.randomUUID()) : null;
+    for (const dataUrl of origDataList) origUrls.push(await uploadPhoto(dataUrl, 'real', uid()));
+    const tileUrl = waterDataList.length > 0 ? await uploadPhoto(waterDataList[0], 'tile', uid()) : null;
 
     const { error: insertErr } = await sb.from('dog_wall').insert({
       names, location, when_stayed: formatMonth(whenRaw), fun_fact: funFact || null,
@@ -371,6 +378,7 @@ function rowHTML(entry){
   const tileThumb = entry.tile_image_url
     ? `<img src="${entry.tile_image_url}" alt="watercolor"><div class="thumb-label">Watercolor</div>`
     : `<div class="no-tile">No watercolor yet</div>`;
+  const extraCount = (entry.extra_images && entry.extra_images.length > 1) ? ` (+${entry.extra_images.length - 1} more)` : '';
 
   const actionButtons = currentTab === 'pending'
     ? `<button class="approve" data-action="approve">Approve</button>
@@ -383,7 +391,7 @@ function rowHTML(entry){
     <div class="row" data-id="${entry.id}">
       <div class="thumbs">
         <img src="${entry.image_url}" alt="original">
-        <div class="thumb-label">Original</div>
+        <div class="thumb-label">Original${extraCount}</div>
       </div>
       <div class="thumbs">
         ${tileThumb}
@@ -397,7 +405,14 @@ function rowHTML(entry){
     </div>`;
 }
 
+// ---------- Edit panel: shows EXISTING photos as removable thumbnails,
+// plus an uploader to add more. Nothing gets replaced wholesale anymore. ----------
+const editState = new Map(); // entryId -> { existingOrig: [urls], newOrig: [{id,dataUrl}], existingWater: url|null, newWater: {id,dataUrl}|null }
+
 function editPanelHTML(entry){
+  const existingOrig = (entry.extra_images && entry.extra_images.length > 0) ? entry.extra_images : [entry.image_url];
+  editState.set(entry.id, { existingOrig: [...existingOrig], newOrig: [], existingWater: entry.tile_image_url || null, newWater: null });
+
   return `
     <div class="edit-panel" data-edit-id="${entry.id}">
       <h3 style="font-size:1rem; margin:0 0 14px;">Edit entry</h3>
@@ -406,24 +421,22 @@ function editPanelHTML(entry){
       <label>Where were they visiting from?</label>
       <input type="text" class="e-location" value="${escapeHtml(entry.location)}">
       <label>Fun fact (optional)</label>
-      <textarea class="e-fact">${escapeHtml(entry.fun_fact || '')}</textarea>
-      <label>Photos (leave blank to keep current)</label>
-      <div class="photo-row">
-        <div>
-          <label class="photo-picker">
-            <input type="file" class="e-orig-input" accept="image/*" multiple>
-            <div class="ppt">Replace original photo(s)</div>
-          </label>
-          <div class="preview-wrap e-orig-preview-wrap"><img class="e-orig-preview"></div>
-        </div>
-        <div>
-          <label class="photo-picker">
-            <input type="file" class="e-water-input" accept="image/*">
-            <div class="ppt">${entry.tile_image_url ? 'Replace watercolor photo' : 'Add watercolor photo'}</div>
-          </label>
-          <div class="preview-wrap e-water-preview-wrap"><img class="e-water-preview"></div>
-        </div>
-      </div>
+      <textarea class="e-fact" maxlength="500">${escapeHtml(entry.fun_fact || '')}</textarea>
+
+      <label>Original photos</label>
+      <div class="preview-grid e-orig-grid"></div>
+      <label class="photo-picker e-orig-picker" style="margin-top:8px;">
+        <input type="file" class="e-orig-input" accept="image/*" multiple>
+        <div class="ppt">Add more photos — click or drag &amp; drop</div>
+      </label>
+
+      <label style="margin-top:18px;">Watercolor photo</label>
+      <div class="preview-grid e-water-grid"></div>
+      <label class="photo-picker e-water-picker" style="margin-top:8px;">
+        <input type="file" class="e-water-input" accept="image/*">
+        <div class="ppt">${entry.tile_image_url ? 'Replace watercolor photo' : 'Add watercolor photo'} — click or drag &amp; drop</div>
+      </label>
+
       <div class="err e-err"></div>
       <div class="actions" style="margin-top:16px;">
         <button class="approve e-save" data-action="save-edit">Save Changes</button>
@@ -432,33 +445,110 @@ function editPanelHTML(entry){
     </div>`;
 }
 
+function renderEditPreviews(panel, entryId){
+  const state = editState.get(entryId);
+  const origGrid = panel.querySelector('.e-orig-grid');
+  const waterGrid = panel.querySelector('.e-water-grid');
+
+  const existingThumbs = state.existingOrig.map((url, i) => `
+    <div class="preview-thumb" data-existing-idx="${i}">
+      <img src="${url}" alt="">
+      <button type="button" class="remove-x" data-remove-existing="${i}">&times;</button>
+    </div>`).join('');
+  const newThumbs = state.newOrig.map(p => `
+    <div class="preview-thumb is-new" data-new-id="${p.id}">
+      <img src="${p.dataUrl}" alt="">
+      <button type="button" class="remove-x" data-remove-new="${p.id}">&times;</button>
+    </div>`).join('');
+  origGrid.innerHTML = existingThumbs + newThumbs;
+
+  let waterHTML = '';
+  if (state.existingWater && !state.newWater) {
+    waterHTML = `<div class="preview-thumb"><img src="${state.existingWater}" alt=""><button type="button" class="remove-x" data-remove-existing-water="1">&times;</button></div>`;
+  } else if (state.newWater) {
+    waterHTML = `<div class="preview-thumb is-new"><img src="${state.newWater.dataUrl}" alt=""><button type="button" class="remove-x" data-remove-new-water="1">&times;</button></div>`;
+  }
+  waterGrid.innerHTML = waterHTML;
+}
+
 list.addEventListener('change', async (e) => {
+  const panel = e.target.closest('.edit-panel');
+  if (!panel) return;
+  const entryId = panel.dataset.editId;
+  const state = editState.get(entryId);
+
   if (e.target.classList.contains('e-orig-input')) {
-    const panel = e.target.closest('.edit-panel');
-    const files = Array.from(e.target.files || []);
-    if (files.length === 0) return;
-    const dataUrls = await Promise.all(files.map(f => readAndResize(f, 900)));
-    panel._newOrigImages = dataUrls; // array stored directly on the element (dataset can't hold arrays)
-    const previewWrap = panel.querySelector('.e-orig-preview-wrap');
-    const previewImg = panel.querySelector('.e-orig-preview');
-    previewImg.src = dataUrls[0];
-    previewWrap.classList.add('show');
-    return;
+    const files = Array.from(e.target.files || []).filter(f => f.type.startsWith('image/'));
+    for (const file of files) {
+      const dataUrl = await resizeFile(file, 900);
+      state.newOrig.push({ id: uid(), dataUrl });
+    }
+    e.target.value = '';
+    renderEditPreviews(panel, entryId);
   }
   if (e.target.classList.contains('e-water-input')) {
-    const panel = e.target.closest('.edit-panel');
     const file = e.target.files[0];
-    if (!file) return;
-    const dataUrl = await readAndResize(file, 900);
-    panel.dataset.newWater = dataUrl;
-    const previewWrap = panel.querySelector('.e-water-preview-wrap');
-    const previewImg = panel.querySelector('.e-water-preview');
-    previewImg.src = dataUrl;
-    previewWrap.classList.add('show');
+    if (file) {
+      const dataUrl = await resizeFile(file, 900);
+      state.newWater = { id: uid(), dataUrl };
+    }
+    e.target.value = '';
+    renderEditPreviews(panel, entryId);
   }
 });
 
+// Drag-and-drop for edit-panel pickers (delegated, since panels are added dynamically)
+list.addEventListener('dragover', (e) => {
+  const label = e.target.closest('.e-orig-picker, .e-water-picker');
+  if (!label) return;
+  e.preventDefault();
+  label.classList.add('dragover');
+});
+list.addEventListener('dragleave', (e) => {
+  const label = e.target.closest('.e-orig-picker, .e-water-picker');
+  if (label) label.classList.remove('dragover');
+});
+list.addEventListener('drop', async (e) => {
+  const label = e.target.closest('.e-orig-picker, .e-water-picker');
+  if (!label) return;
+  e.preventDefault();
+  label.classList.remove('dragover');
+  const panel = label.closest('.edit-panel');
+  const entryId = panel.dataset.editId;
+  const state = editState.get(entryId);
+  const files = Array.from(e.dataTransfer.files || []).filter(f => f.type.startsWith('image/'));
+  if (files.length === 0) return;
+
+  if (label.classList.contains('e-orig-picker')) {
+    for (const file of files) {
+      const dataUrl = await resizeFile(file, 900);
+      state.newOrig.push({ id: uid(), dataUrl });
+    }
+  } else {
+    const dataUrl = await resizeFile(files[0], 900);
+    state.newWater = { id: uid(), dataUrl };
+  }
+  renderEditPreviews(panel, entryId);
+});
+
 list.addEventListener('click', async (e) => {
+  const removeExisting = e.target.closest('button[data-remove-existing]');
+  const removeNew = e.target.closest('button[data-remove-new]');
+  const removeExistingWater = e.target.closest('button[data-remove-existing-water]');
+  const removeNewWater = e.target.closest('button[data-remove-new-water]');
+
+  if (removeExisting || removeNew || removeExistingWater || removeNewWater) {
+    const panel = e.target.closest('.edit-panel');
+    const entryId = panel.dataset.editId;
+    const state = editState.get(entryId);
+    if (removeExisting) state.existingOrig.splice(parseInt(removeExisting.dataset.removeExisting, 10), 1);
+    if (removeNew) state.newOrig = state.newOrig.filter(p => p.id !== removeNew.dataset.removeNew);
+    if (removeExistingWater) state.existingWater = null;
+    if (removeNewWater) state.newWater = null;
+    renderEditPreviews(panel, entryId);
+    return;
+  }
+
   const btn = e.target.closest('button[data-action]');
   if (!btn) return;
   const action = btn.dataset.action;
@@ -466,22 +556,27 @@ list.addEventListener('click', async (e) => {
   if (action === 'edit') {
     const row = e.target.closest('.row');
     const id = row.dataset.id;
+    const existingPanel = list.querySelector(`.edit-panel[data-edit-id="${id}"]`);
+    if (existingPanel) { existingPanel.remove(); editState.delete(id); return; }
     const { data, error } = await sb.from('dog_wall').select('*').eq('id', id).single();
     if (error || !data) { alert("Couldn't load this entry."); return; }
-    const existingPanel = list.querySelector(`.edit-panel[data-edit-id="${id}"]`);
-    if (existingPanel) { existingPanel.remove(); return; }
     row.insertAdjacentHTML('afterend', editPanelHTML(data));
+    const panel = list.querySelector(`.edit-panel[data-edit-id="${id}"]`);
+    renderEditPreviews(panel, id);
     return;
   }
 
   if (action === 'cancel-edit') {
-    e.target.closest('.edit-panel').remove();
+    const panel = e.target.closest('.edit-panel');
+    editState.delete(panel.dataset.editId);
+    panel.remove();
     return;
   }
 
   if (action === 'save-edit') {
     const panel = e.target.closest('.edit-panel');
     const id = panel.dataset.editId;
+    const state = editState.get(id);
     const errEl = panel.querySelector('.e-err');
     errEl.classList.remove('show');
     btn.disabled = true;
@@ -492,24 +587,24 @@ list.addEventListener('click', async (e) => {
       const location = panel.querySelector('.e-location').value.trim();
       const funFact = panel.querySelector('.e-fact').value.trim();
       if (!names || !location) throw new Error('Name and location are required.');
+      if (state.existingOrig.length === 0 && state.newOrig.length === 0) throw new Error('Keep at least one original photo.');
 
-      const updates = { names, location, fun_fact: funFact || null };
+      const newlyUploaded = [];
+      for (const p of state.newOrig) newlyUploaded.push(await uploadPhoto(p.dataUrl, 'real', uid()));
+      const finalOrig = [...state.existingOrig, ...newlyUploaded];
 
-      if (panel._newOrigImages && panel._newOrigImages.length > 0) {
-        const origUrls = [];
-        for (const dataUrl of panel._newOrigImages) {
-          origUrls.push(await uploadPhoto(dataUrl, 'real', crypto.randomUUID()));
-        }
-        updates.image_url = origUrls[0];
-        updates.extra_images = origUrls;
-      }
-      if (panel.dataset.newWater) {
-        updates.tile_image_url = await uploadPhoto(panel.dataset.newWater, 'tile', crypto.randomUUID());
-      }
+      let tileUrl = state.existingWater;
+      if (state.newWater) tileUrl = await uploadPhoto(state.newWater.dataUrl, 'tile', uid());
+
+      const updates = {
+        names, location, fun_fact: funFact || null,
+        image_url: finalOrig[0], extra_images: finalOrig, tile_image_url: tileUrl
+      };
 
       const { error } = await sb.from('dog_wall').update(updates).eq('id', id);
       if (error) throw error;
 
+      editState.delete(id);
       panel.remove();
       loadList();
     } catch (err) {
@@ -536,7 +631,7 @@ list.addEventListener('click', async (e) => {
       if (error) throw error;
     }
     const editPanel = list.querySelector(`.edit-panel[data-edit-id="${id}"]`);
-    if (editPanel) editPanel.remove();
+    if (editPanel) { editPanel.remove(); editState.delete(id); }
     row.remove();
     if (!list.querySelector('.row')) {
       list.innerHTML = `<div class="empty">${currentTab === 'pending' ? 'No submissions waiting for review.' : 'No dogs on the wall yet.'}</div>`;
