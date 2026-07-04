@@ -10,7 +10,7 @@
   :root{ --ink:#1c1a17; --ink-soft:#6b665e; --frame:#171614; --wainscot:#f4f2ee; }
   * { box-sizing: border-box; }
   body { margin:0; font-family:'Inter',sans-serif; background:var(--wainscot); color:var(--ink); min-height:100vh; }
-  .wrap { max-width: 760px; margin: 0 auto; padding: 48px 20px 80px; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 48px 20px 80px; }
   h1 { font-family:'Fraunces',serif; font-weight:500; font-size:1.8rem; margin:0 0 6px; }
   .sub { color:var(--ink-soft); font-size:0.9rem; margin-bottom:32px; }
 
@@ -20,7 +20,7 @@
   label { display:block; font-size:0.72rem; font-weight:600; letter-spacing:0.04em; text-transform:uppercase; color:var(--ink-soft); margin:16px 0 6px; }
   label:first-of-type { margin-top:0; }
   input, textarea { width:100%; padding:11px 12px; border:1px solid #00000022; border-radius:6px; font-size:0.95rem; font-family:inherit; }
-  textarea { resize: vertical; min-height: 80px; }
+  textarea { resize: vertical; min-height: 56px; }
   .btn { width:100%; margin-top:20px; padding:12px; border-radius:8px; border:none; background:var(--frame); color:#fff; font-weight:600; font-size:0.9rem; cursor:pointer; font-family:inherit; }
   .btn:disabled { opacity:0.55; }
   .err { color:#7a2d2d; font-size:0.82rem; margin-top:12px; display:none; }
@@ -38,43 +38,24 @@
   .tabs button.active { color:var(--ink); border-bottom-color:var(--frame); }
 
   .row { display:flex; gap:14px; background:#fff; border-radius:10px; padding:14px; margin-bottom:14px; align-items:flex-start; box-shadow:0 4px 14px -10px rgba(0,0,0,0.3); }
-  .row .thumbs { display:flex; flex-direction:column; gap:4px; flex-shrink:0; }
-  .row .thumbs img { width:72px; height:72px; object-fit:cover; border-radius:8px; display:block; }
-  .row .thumbs .thumb-label { font-size:0.6rem; text-transform:uppercase; letter-spacing:0.04em; color:var(--ink-soft); text-align:center; }
-  .no-tile { width:72px; height:72px; border-radius:8px; border:1.5px dashed #00000030; display:flex; align-items:center; justify-content:center; font-size:0.6rem; color:var(--ink-soft); text-align:center; padding:4px; }
-  .rdetails { flex:1; font-size:0.85rem; color:var(--ink-soft); min-width:0; }
+  .row img { width:84px; height:84px; object-fit:cover; border-radius:8px; flex-shrink:0; }
+  .rdetails { flex:1; font-size:0.85rem; color:var(--ink-soft); }
   .rdetails strong { color:var(--ink); display:block; font-size:0.95rem; margin-bottom:2px; }
-  .fact { margin-top:6px; font-style: italic; white-space: pre-wrap; }
-  .actions { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+  .fact { margin-top:6px; font-style: italic; }
+  .actions { display:flex; gap:8px; margin-top:10px; }
   .actions button { font-size:0.78rem; padding:7px 14px; border-radius:6px; border:none; cursor:pointer; font-weight:600; font-family:inherit; }
   .approve { background:#2d5a3d; color:#fff; }
   .reject { background:#7a2d2d; color:#fff; }
-  .edit-btn { background:#f0ede6; color:var(--ink); }
   .empty { text-align:center; color:var(--ink-soft); padding:50px 10px; }
   .hidden { display:none; }
 
-  .add-panel, .edit-panel { background:#fff; border-radius:10px; padding:20px 22px 24px; margin-bottom:24px; box-shadow:0 4px 14px -10px rgba(0,0,0,0.3); }
-  .photo-row { display:flex; gap:14px; flex-wrap:wrap; }
-  .photo-row > div { flex:1; min-width:200px; }
-
-  .photo-picker { border: 1.5px dashed #00000030; border-radius: 8px; padding: 14px; text-align: center; cursor: pointer; background: #fafafa; transition: background 0.15s ease, border-color 0.15s ease; }
-  .photo-picker.dragover { background: #fff; border-color: var(--frame); }
+  .add-panel { background:#fff; border-radius:10px; padding:20px 22px 24px; margin-bottom:24px; box-shadow:0 4px 14px -10px rgba(0,0,0,0.3); }
+  .photo-picker { border: 1.5px dashed #00000030; border-radius: 8px; padding: 16px; text-align: center; cursor: pointer; background: #fafafa; }
   .photo-picker input { display:none; }
-  .photo-picker .ppt { font-size: 0.8rem; color: var(--ink-soft); }
-
-  .preview-grid { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
-  .preview-thumb { position:relative; width:64px; height:64px; border-radius:8px; overflow:hidden; flex-shrink:0; }
-  .preview-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
-  .preview-thumb .remove-x {
-    position:absolute; top:2px; right:2px; width:18px; height:18px;
-    background:rgba(0,0,0,0.65); color:#fff; border:none; border-radius:50%;
-    font-size:12px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center;
-  }
-  .preview-thumb .remove-x:hover { background:rgba(0,0,0,0.85); }
-  .preview-thumb.is-new::after {
-    content:'new'; position:absolute; bottom:0; left:0; right:0; background:rgba(45,90,61,0.85); color:#fff;
-    font-size:0.55rem; text-align:center; padding:1px 0; text-transform:uppercase; letter-spacing:0.04em;
-  }
+  .photo-picker .ppt { font-size: 0.85rem; color: var(--ink-soft); }
+  .preview-wrap { margin-top: 10px; display:none; }
+  .preview-wrap.show { display:block; }
+  .preview-wrap img { width:100%; max-height:200px; object-fit:cover; border-radius:8px; }
 </style>
 </head>
 <body>
@@ -98,7 +79,7 @@
   <div class="topbar">
     <div>
       <h1>Dog Wall Moderation</h1>
-      <div class="sub" style="margin-bottom:0;">Review submissions, add past guests, or edit what's live.</div>
+      <div class="sub" style="margin-bottom:0;">Review new submissions, or add dogs who've already stayed.</div>
     </div>
     <div class="top-actions">
       <button class="add-btn" id="toggleAddBtn">+ Add a dog</button>
@@ -117,26 +98,13 @@
       <label for="addWhen">When did they stay?</label>
       <input type="month" id="addWhen">
       <label for="addFact">A fun fact (optional)</label>
-      <textarea id="addFact" maxlength="500" placeholder="e.g. Can do a backflip for a treat"></textarea>
-
-      <label>Photos</label>
-      <div class="photo-row">
-        <div>
-          <label class="photo-picker" id="addOrigLabel">
-            <input type="file" id="addOrigPhoto" accept="image/*" multiple>
-            <div class="ppt">Original photo(s) — click or drag &amp; drop, you can select more than one</div>
-          </label>
-          <div class="preview-grid" id="addOrigPreviewGrid"></div>
-        </div>
-        <div>
-          <label class="photo-picker" id="addWaterLabel">
-            <input type="file" id="addWaterPhoto" accept="image/*">
-            <div class="ppt">Watercolor photo (optional) — click or drag &amp; drop</div>
-          </label>
-          <div class="preview-grid" id="addWaterPreviewGrid"></div>
-        </div>
-      </div>
-
+      <textarea id="addFact" maxlength="140" placeholder="e.g. Can do a backflip for a treat"></textarea>
+      <label>Photo</label>
+      <label class="photo-picker" id="addPickerLabel">
+        <input type="file" id="addPhoto" accept="image/*">
+        <div class="ppt" id="addPickerText">Tap to choose a photo</div>
+      </label>
+      <div class="preview-wrap" id="addPreviewWrap"><img id="addPreviewImg" alt=""></div>
       <div class="err" id="addErr"></div>
       <div class="ok" id="addOk">Added to the wall!</div>
       <button type="submit" class="btn" id="addSubmitBtn">Add to the wall</button>
@@ -168,104 +136,19 @@ let currentTab = 'pending';
 const toggleAddBtn = document.getElementById('toggleAddBtn');
 const addPanel = document.getElementById('addPanel');
 const addForm = document.getElementById('addForm');
+const addPhoto = document.getElementById('addPhoto');
+const addPickerText = document.getElementById('addPickerText');
+const addPreviewWrap = document.getElementById('addPreviewWrap');
+const addPreviewImg = document.getElementById('addPreviewImg');
 const addErr = document.getElementById('addErr');
 const addOk = document.getElementById('addOk');
 const addSubmitBtn = document.getElementById('addSubmitBtn');
 
+let pendingRealImg = null;
+let pendingTileImg = null;
+
 function escapeHtml(str){ const d = document.createElement('div'); d.textContent = str || ''; return d.innerHTML; }
-function uid(){ return crypto.randomUUID(); }
 
-function resizeFile(file, maxDim){
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const img = new Image();
-      img.onload = () => {
-        let w = img.width, h = img.height;
-        if (w > h && w > maxDim) { h = Math.round(h * (maxDim / w)); w = maxDim; }
-        else if (h > maxDim) { w = Math.round(w * (maxDim / h)); h = maxDim; }
-        const canvas = document.createElement('canvas');
-        canvas.width = w; canvas.height = h;
-        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-        resolve(canvas.toDataURL('image/jpeg', 0.8));
-      };
-      img.onerror = reject;
-      img.src = e.target.result;
-    };
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
-
-function dataURLtoBlob(dataurl){
-  const arr = dataurl.split(',');
-  const mime = arr[0].match(/:(.*?);/)[1];
-  const bstr = atob(arr[1]);
-  let n = bstr.length;
-  const u8arr = new Uint8Array(n);
-  while (n--) u8arr[n] = bstr.charCodeAt(n);
-  return new Blob([u8arr], { type: mime });
-}
-
-async function uploadPhoto(dataUrl, folder, id){
-  const blob = dataURLtoBlob(dataUrl);
-  const path = `${folder}/${id}.jpg`;
-  const { error } = await sb.storage.from('dog-photos').upload(path, blob, { contentType: 'image/jpeg' });
-  if (error) throw error;
-  const { data } = sb.storage.from('dog-photos').getPublicUrl(path);
-  return data.publicUrl;
-}
-
-// Wires a picker label as both a click-to-choose AND drag-and-drop target.
-// `multi` controls whether more than one file can accumulate.
-// Returns { getAll(), reset() } — getAll() returns array of data URLs.
-function wirePicker(labelEl, inputEl, gridEl, multi){
-  let photos = []; // { id, dataUrl }
-
-  function render(){
-    gridEl.innerHTML = photos.map(p => `
-      <div class="preview-thumb" data-id="${p.id}">
-        <img src="${p.dataUrl}" alt="">
-        <button type="button" class="remove-x" data-remove="${p.id}">&times;</button>
-      </div>`).join('');
-  }
-  gridEl.addEventListener('click', (e) => {
-    const btn = e.target.closest('button[data-remove]');
-    if (!btn) return;
-    photos = photos.filter(p => p.id !== btn.dataset.remove);
-    render();
-  });
-
-  async function addFiles(fileList){
-    const files = Array.from(fileList || []).filter(f => f.type.startsWith('image/'));
-    if (files.length === 0) return;
-    if (!multi) photos = [];
-    for (const file of files) {
-      const dataUrl = await resizeFile(file, 900);
-      photos.push({ id: uid(), dataUrl });
-      if (!multi) break;
-    }
-    render();
-  }
-
-  inputEl.addEventListener('change', () => { addFiles(inputEl.files); inputEl.value = ''; });
-  ['dragover','dragenter'].forEach(evt => labelEl.addEventListener(evt, (e) => { e.preventDefault(); labelEl.classList.add('dragover'); }));
-  ['dragleave','dragend'].forEach(evt => labelEl.addEventListener(evt, () => labelEl.classList.remove('dragover')));
-  labelEl.addEventListener('drop', (e) => { e.preventDefault(); labelEl.classList.remove('dragover'); addFiles(e.dataTransfer.files); });
-
-  return {
-    getAll(){ return photos.map(p => p.dataUrl); },
-    reset(){ photos = []; render(); }
-  };
-}
-
-function formatMonth(val){
-  if (!val) return '';
-  const [y, m] = val.split('-').map(Number);
-  return new Date(y, m - 1, 1).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-}
-
-// ---------- Auth ----------
 loginForm.addEventListener('submit', async (e) => {
   e.preventDefault();
   loginErr.classList.remove('show');
@@ -305,15 +188,87 @@ tabs.forEach(btn => {
   });
 });
 
-toggleAddBtn.addEventListener('click', () => addPanel.classList.toggle('hidden'));
+toggleAddBtn.addEventListener('click', () => {
+  addPanel.classList.toggle('hidden');
+});
 
-// ---------- Add a dog directly ----------
-const addOrigPicker = wirePicker(
-  document.getElementById('addOrigLabel'), document.getElementById('addOrigPhoto'), document.getElementById('addOrigPreviewGrid'), true
-);
-const addWaterPicker = wirePicker(
-  document.getElementById('addWaterLabel'), document.getElementById('addWaterPhoto'), document.getElementById('addWaterPreviewGrid'), false
-);
+function createWatercolorTile(img, w, h){
+  const canvas = document.createElement('canvas');
+  canvas.width = w; canvas.height = h;
+  const ctx = canvas.getContext('2d');
+  ctx.filter = 'blur(3px) saturate(1.3) contrast(0.92) brightness(1.05)';
+  ctx.drawImage(img, 0, 0, w, h);
+  ctx.filter = 'none';
+  const imgData = ctx.getImageData(0, 0, w, h);
+  const d = imgData.data;
+  const levels = 40;
+  for (let i = 0; i < d.length; i += 4) {
+    d[i]   = Math.min(255, Math.round(d[i]   / levels) * levels);
+    d[i+1] = Math.min(255, Math.round(d[i+1] / levels) * levels);
+    d[i+2] = Math.min(255, Math.round(d[i+2] / levels) * levels);
+  }
+  ctx.putImageData(imgData, 0, 0);
+  ctx.globalCompositeOperation = 'overlay';
+  ctx.globalAlpha = 0.05;
+  const grainCount = Math.floor((w * h) / 700);
+  for (let i = 0; i < grainCount; i++) {
+    const gx = Math.random() * w, gy = Math.random() * h;
+    const shade = Math.random() > 0.5 ? '255,255,255' : '0,0,0';
+    ctx.fillStyle = 'rgba(' + shade + ',1)';
+    ctx.fillRect(gx, gy, 1.3, 1.3);
+  }
+  ctx.globalAlpha = 1;
+  ctx.globalCompositeOperation = 'source-over';
+  const grad = ctx.createRadialGradient(w/2, h/2, Math.min(w,h)*0.32, w/2, h/2, Math.min(w,h)*0.72);
+  grad.addColorStop(0, 'rgba(250,247,240,0)');
+  grad.addColorStop(1, 'rgba(250,247,240,0.4)');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, w, h);
+  return canvas.toDataURL('image/jpeg', 0.82);
+}
+
+function dataURLtoBlob(dataurl){
+  const arr = dataurl.split(',');
+  const mime = arr[0].match(/:(.*?);/)[1];
+  const bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+  while (n--) u8arr[n] = bstr.charCodeAt(n);
+  return new Blob([u8arr], { type: mime });
+}
+
+addPhoto.addEventListener('change', () => {
+  addErr.classList.remove('show');
+  const file = addPhoto.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const img = new Image();
+    img.onload = () => {
+      const maxDim = 900;
+      let w = img.width, h = img.height;
+      if (w > h && w > maxDim) { h = Math.round(h * (maxDim / w)); w = maxDim; }
+      else if (h > maxDim) { w = Math.round(w * (maxDim / h)); h = maxDim; }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      pendingRealImg = canvas.toDataURL('image/jpeg', 0.78);
+      try { pendingTileImg = createWatercolorTile(img, w, h); }
+      catch (err) { pendingTileImg = pendingRealImg; }
+      addPreviewImg.src = pendingRealImg;
+      addPreviewWrap.classList.add('show');
+      addPickerText.textContent = 'Tap to choose a different photo';
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+});
+
+function formatMonth(val){
+  if (!val) return '';
+  const [y, m] = val.split('-').map(Number);
+  return new Date(y, m - 1, 1).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+}
 
 addForm.addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -324,11 +279,9 @@ addForm.addEventListener('submit', async (e) => {
   const location = document.getElementById('addLocation').value.trim();
   const whenRaw = document.getElementById('addWhen').value;
   const funFact = document.getElementById('addFact').value.trim();
-  const origDataList = addOrigPicker.getAll();
-  const waterDataList = addWaterPicker.getAll();
 
-  if (!names || !location || !whenRaw || origDataList.length === 0) {
-    addErr.textContent = 'Fill in the name, location, date, and at least one original photo.';
+  if (!names || !location || !whenRaw || !pendingRealImg) {
+    addErr.textContent = 'Fill in the name, location, date, and a photo.';
     addErr.classList.add('show');
     return;
   }
@@ -337,19 +290,30 @@ addForm.addEventListener('submit', async (e) => {
   addSubmitBtn.textContent = 'Adding...';
 
   try {
-    const origUrls = [];
-    for (const dataUrl of origDataList) origUrls.push(await uploadPhoto(dataUrl, 'real', uid()));
-    const tileUrl = waterDataList.length > 0 ? await uploadPhoto(waterDataList[0], 'tile', uid()) : null;
+    const id = crypto.randomUUID();
+    const realBlob = dataURLtoBlob(pendingRealImg);
+    const tileBlob = dataURLtoBlob(pendingTileImg);
+
+    const { error: e1 } = await sb.storage.from('dog-photos').upload(`real/${id}.jpg`, realBlob, { contentType: 'image/jpeg' });
+    if (e1) throw e1;
+    const { error: e2 } = await sb.storage.from('dog-photos').upload(`tile/${id}.jpg`, tileBlob, { contentType: 'image/jpeg' });
+    if (e2) throw e2;
+
+    const { data: realUrl } = sb.storage.from('dog-photos').getPublicUrl(`real/${id}.jpg`);
+    const { data: tileUrl } = sb.storage.from('dog-photos').getPublicUrl(`tile/${id}.jpg`);
 
     const { error: insertErr } = await sb.from('dog_wall').insert({
       names, location, when_stayed: formatMonth(whenRaw), fun_fact: funFact || null,
-      image_url: origUrls[0], extra_images: origUrls, tile_image_url: tileUrl, status: 'approved'
+      image_url: realUrl.publicUrl, tile_image_url: tileUrl.publicUrl,
+      status: 'approved'
     });
     if (insertErr) throw insertErr;
 
     addForm.reset();
-    addOrigPicker.reset();
-    addWaterPicker.reset();
+    addPreviewWrap.classList.remove('show');
+    addPickerText.textContent = 'Tap to choose a photo';
+    pendingRealImg = null;
+    pendingTileImg = null;
     addOk.classList.add('show');
     if (currentTab === 'approved') loadList();
   } catch (err) {
@@ -362,7 +326,6 @@ addForm.addEventListener('submit', async (e) => {
   }
 });
 
-// ---------- List rendering ----------
 async function loadList(){
   list.innerHTML = '<div class="empty">Loading...</div>';
   const { data, error } = await sb.from('dog_wall').select('*').eq('status', currentTab).order('created_at', { ascending: currentTab === 'pending' });
@@ -371,267 +334,38 @@ async function loadList(){
     list.innerHTML = `<div class="empty">${currentTab === 'pending' ? 'No submissions waiting for review.' : 'No dogs on the wall yet.'}</div>`;
     return;
   }
-  list.innerHTML = data.map(entry => rowHTML(entry)).join('');
-}
 
-function rowHTML(entry){
-  const tileThumb = entry.tile_image_url
-    ? `<img src="${entry.tile_image_url}" alt="watercolor"><div class="thumb-label">Watercolor</div>`
-    : `<div class="no-tile">No watercolor yet</div>`;
-  const extraCount = (entry.extra_images && entry.extra_images.length > 1) ? ` (+${entry.extra_images.length - 1} more)` : '';
-
-  const actionButtons = currentTab === 'pending'
-    ? `<button class="approve" data-action="approve">Approve</button>
-       <button class="reject" data-action="reject">Reject</button>
-       <button class="edit-btn" data-action="edit">Edit / Add Watercolor</button>`
-    : `<button class="edit-btn" data-action="edit">Edit</button>
-       <button class="reject" data-action="remove">Remove from wall</button>`;
-
-  return `
+  list.innerHTML = data.map(entry => `
     <div class="row" data-id="${entry.id}">
-      <div class="thumbs">
-        <img src="${entry.image_url}" alt="original">
-        <div class="thumb-label">Original${extraCount}</div>
-      </div>
-      <div class="thumbs">
-        ${tileThumb}
-      </div>
+      <img src="${entry.image_url}" alt="">
       <div class="rdetails">
         <strong>${escapeHtml(entry.names)}</strong>
         ${escapeHtml(entry.location)} &middot; ${escapeHtml(entry.when_stayed)}
         ${entry.fun_fact ? `<div class="fact">${escapeHtml(entry.fun_fact)}</div>` : ''}
-        <div class="actions">${actionButtons}</div>
+        <div class="actions">
+          ${currentTab === 'pending'
+            ? `<button class="approve" data-action="approve">Approve</button><button class="reject" data-action="reject">Reject</button>`
+            : `<button class="reject" data-action="remove">Remove from wall</button>`}
+        </div>
       </div>
-    </div>`;
-}
-
-// ---------- Edit panel: shows EXISTING photos as removable thumbnails,
-// plus an uploader to add more. Nothing gets replaced wholesale anymore. ----------
-const editState = new Map(); // entryId -> { existingOrig: [urls], newOrig: [{id,dataUrl}], existingWater: url|null, newWater: {id,dataUrl}|null }
-
-function editPanelHTML(entry){
-  const existingOrig = (entry.extra_images && entry.extra_images.length > 0) ? entry.extra_images : [entry.image_url];
-  editState.set(entry.id, { existingOrig: [...existingOrig], newOrig: [], existingWater: entry.tile_image_url || null, newWater: null });
-
-  return `
-    <div class="edit-panel" data-edit-id="${entry.id}">
-      <h3 style="font-size:1rem; margin:0 0 14px;">Edit entry</h3>
-      <label>Dog's name(s)</label>
-      <input type="text" class="e-names" value="${escapeHtml(entry.names)}">
-      <label>Where were they visiting from?</label>
-      <input type="text" class="e-location" value="${escapeHtml(entry.location)}">
-      <label>Fun fact (optional)</label>
-      <textarea class="e-fact" maxlength="500">${escapeHtml(entry.fun_fact || '')}</textarea>
-
-      <label>Original photos</label>
-      <div class="preview-grid e-orig-grid"></div>
-      <label class="photo-picker e-orig-picker" style="margin-top:8px;">
-        <input type="file" class="e-orig-input" accept="image/*" multiple>
-        <div class="ppt">Add more photos — click or drag &amp; drop</div>
-      </label>
-
-      <label style="margin-top:18px;">Watercolor photo</label>
-      <div class="preview-grid e-water-grid"></div>
-      <label class="photo-picker e-water-picker" style="margin-top:8px;">
-        <input type="file" class="e-water-input" accept="image/*">
-        <div class="ppt">${entry.tile_image_url ? 'Replace watercolor photo' : 'Add watercolor photo'} — click or drag &amp; drop</div>
-      </label>
-
-      <div class="err e-err"></div>
-      <div class="actions" style="margin-top:16px;">
-        <button class="approve e-save" data-action="save-edit">Save Changes</button>
-        <button class="edit-btn e-cancel" data-action="cancel-edit">Cancel</button>
-      </div>
-    </div>`;
-}
-
-function renderEditPreviews(panel, entryId){
-  const state = editState.get(entryId);
-  const origGrid = panel.querySelector('.e-orig-grid');
-  const waterGrid = panel.querySelector('.e-water-grid');
-
-  const existingThumbs = state.existingOrig.map((url, i) => `
-    <div class="preview-thumb" data-existing-idx="${i}">
-      <img src="${url}" alt="">
-      <button type="button" class="remove-x" data-remove-existing="${i}">&times;</button>
     </div>`).join('');
-  const newThumbs = state.newOrig.map(p => `
-    <div class="preview-thumb is-new" data-new-id="${p.id}">
-      <img src="${p.dataUrl}" alt="">
-      <button type="button" class="remove-x" data-remove-new="${p.id}">&times;</button>
-    </div>`).join('');
-  origGrid.innerHTML = existingThumbs + newThumbs;
-
-  let waterHTML = '';
-  if (state.existingWater && !state.newWater) {
-    waterHTML = `<div class="preview-thumb"><img src="${state.existingWater}" alt=""><button type="button" class="remove-x" data-remove-existing-water="1">&times;</button></div>`;
-  } else if (state.newWater) {
-    waterHTML = `<div class="preview-thumb is-new"><img src="${state.newWater.dataUrl}" alt=""><button type="button" class="remove-x" data-remove-new-water="1">&times;</button></div>`;
-  }
-  waterGrid.innerHTML = waterHTML;
 }
-
-list.addEventListener('change', async (e) => {
-  const panel = e.target.closest('.edit-panel');
-  if (!panel) return;
-  const entryId = panel.dataset.editId;
-  const state = editState.get(entryId);
-
-  if (e.target.classList.contains('e-orig-input')) {
-    const files = Array.from(e.target.files || []).filter(f => f.type.startsWith('image/'));
-    for (const file of files) {
-      const dataUrl = await resizeFile(file, 900);
-      state.newOrig.push({ id: uid(), dataUrl });
-    }
-    e.target.value = '';
-    renderEditPreviews(panel, entryId);
-  }
-  if (e.target.classList.contains('e-water-input')) {
-    const file = e.target.files[0];
-    if (file) {
-      const dataUrl = await resizeFile(file, 900);
-      state.newWater = { id: uid(), dataUrl };
-    }
-    e.target.value = '';
-    renderEditPreviews(panel, entryId);
-  }
-});
-
-// Drag-and-drop for edit-panel pickers (delegated, since panels are added dynamically)
-list.addEventListener('dragover', (e) => {
-  const label = e.target.closest('.e-orig-picker, .e-water-picker');
-  if (!label) return;
-  e.preventDefault();
-  label.classList.add('dragover');
-});
-list.addEventListener('dragleave', (e) => {
-  const label = e.target.closest('.e-orig-picker, .e-water-picker');
-  if (label) label.classList.remove('dragover');
-});
-list.addEventListener('drop', async (e) => {
-  const label = e.target.closest('.e-orig-picker, .e-water-picker');
-  if (!label) return;
-  e.preventDefault();
-  label.classList.remove('dragover');
-  const panel = label.closest('.edit-panel');
-  const entryId = panel.dataset.editId;
-  const state = editState.get(entryId);
-  const files = Array.from(e.dataTransfer.files || []).filter(f => f.type.startsWith('image/'));
-  if (files.length === 0) return;
-
-  if (label.classList.contains('e-orig-picker')) {
-    for (const file of files) {
-      const dataUrl = await resizeFile(file, 900);
-      state.newOrig.push({ id: uid(), dataUrl });
-    }
-  } else {
-    const dataUrl = await resizeFile(files[0], 900);
-    state.newWater = { id: uid(), dataUrl };
-  }
-  renderEditPreviews(panel, entryId);
-});
 
 list.addEventListener('click', async (e) => {
-  const removeExisting = e.target.closest('button[data-remove-existing]');
-  const removeNew = e.target.closest('button[data-remove-new]');
-  const removeExistingWater = e.target.closest('button[data-remove-existing-water]');
-  const removeNewWater = e.target.closest('button[data-remove-new-water]');
-
-  if (removeExisting || removeNew || removeExistingWater || removeNewWater) {
-    const panel = e.target.closest('.edit-panel');
-    const entryId = panel.dataset.editId;
-    const state = editState.get(entryId);
-    if (removeExisting) state.existingOrig.splice(parseInt(removeExisting.dataset.removeExisting, 10), 1);
-    if (removeNew) state.newOrig = state.newOrig.filter(p => p.id !== removeNew.dataset.removeNew);
-    if (removeExistingWater) state.existingWater = null;
-    if (removeNewWater) state.newWater = null;
-    renderEditPreviews(panel, entryId);
-    return;
-  }
-
   const btn = e.target.closest('button[data-action]');
   if (!btn) return;
-  const action = btn.dataset.action;
-
-  if (action === 'edit') {
-    const row = e.target.closest('.row');
-    const id = row.dataset.id;
-    const existingPanel = list.querySelector(`.edit-panel[data-edit-id="${id}"]`);
-    if (existingPanel) { existingPanel.remove(); editState.delete(id); return; }
-    const { data, error } = await sb.from('dog_wall').select('*').eq('id', id).single();
-    if (error || !data) { alert("Couldn't load this entry."); return; }
-    row.insertAdjacentHTML('afterend', editPanelHTML(data));
-    const panel = list.querySelector(`.edit-panel[data-edit-id="${id}"]`);
-    renderEditPreviews(panel, id);
-    return;
-  }
-
-  if (action === 'cancel-edit') {
-    const panel = e.target.closest('.edit-panel');
-    editState.delete(panel.dataset.editId);
-    panel.remove();
-    return;
-  }
-
-  if (action === 'save-edit') {
-    const panel = e.target.closest('.edit-panel');
-    const id = panel.dataset.editId;
-    const state = editState.get(id);
-    const errEl = panel.querySelector('.e-err');
-    errEl.classList.remove('show');
-    btn.disabled = true;
-    btn.textContent = 'Saving...';
-
-    try {
-      const names = panel.querySelector('.e-names').value.trim();
-      const location = panel.querySelector('.e-location').value.trim();
-      const funFact = panel.querySelector('.e-fact').value.trim();
-      if (!names || !location) throw new Error('Name and location are required.');
-      if (state.existingOrig.length === 0 && state.newOrig.length === 0) throw new Error('Keep at least one original photo.');
-
-      const newlyUploaded = [];
-      for (const p of state.newOrig) newlyUploaded.push(await uploadPhoto(p.dataUrl, 'real', uid()));
-      const finalOrig = [...state.existingOrig, ...newlyUploaded];
-
-      let tileUrl = state.existingWater;
-      if (state.newWater) tileUrl = await uploadPhoto(state.newWater.dataUrl, 'tile', uid());
-
-      const updates = {
-        names, location, fun_fact: funFact || null,
-        image_url: finalOrig[0], extra_images: finalOrig, tile_image_url: tileUrl
-      };
-
-      const { error } = await sb.from('dog_wall').update(updates).eq('id', id);
-      if (error) throw error;
-
-      editState.delete(id);
-      panel.remove();
-      loadList();
-    } catch (err) {
-      errEl.textContent = err.message || "Couldn't save changes.";
-      errEl.classList.add('show');
-      btn.disabled = false;
-      btn.textContent = 'Save Changes';
-      console.error(err);
-    }
-    return;
-  }
-
-  // approve / reject / remove
   const row = e.target.closest('.row');
   const id = row.dataset.id;
   btn.disabled = true;
 
   try {
-    if (action === 'approve') {
+    if (btn.dataset.action === 'approve') {
       const { error } = await sb.from('dog_wall').update({ status: 'approved' }).eq('id', id);
       if (error) throw error;
     } else {
       const { error } = await sb.from('dog_wall').delete().eq('id', id);
       if (error) throw error;
     }
-    const editPanel = list.querySelector(`.edit-panel[data-edit-id="${id}"]`);
-    if (editPanel) { editPanel.remove(); editState.delete(id); }
     row.remove();
     if (!list.querySelector('.row')) {
       list.innerHTML = `<div class="empty">${currentTab === 'pending' ? 'No submissions waiting for review.' : 'No dogs on the wall yet.'}</div>`;

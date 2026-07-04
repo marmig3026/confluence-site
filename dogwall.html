@@ -25,10 +25,13 @@
   }
   .chair-rail { height: 10px; background: linear-gradient(180deg, #ffffff 0%, #efeee7 100%); box-shadow: 0 2px 5px rgba(0,0,0,0.18); }
 
-  body[data-page="dogwall"] .site-header {
-    background: rgba(255,255,255,0.18);
-    border-bottom: 1px solid rgba(255,255,255,0.25);
-    backdrop-filter: blur(10px);
+  body[data-page="dogwall"] .site-header,
+  body[data-page="dogwall"] .site-header .inner {
+    background: transparent !important;
+    background-color: transparent !important;
+    border-bottom: none !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
   }
   body[data-page="dogwall"] .brand span,
   body[data-page="dogwall"] .nav-links a:not(.cta) {
@@ -56,11 +59,35 @@
   .plaque strong { color: var(--ink); font-weight: 600; }
 
   .gallery-scroll {
+    position: relative;
     overflow-x: auto;
     overflow-y: hidden;
     padding: 30px 0 70px;
     -webkit-overflow-scrolling: touch;
   }
+  .scroll-arrow {
+    position: fixed;
+    top: 50%;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.9);
+    box-shadow: 0 8px 18px -8px rgba(0,0,0,0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--frame);
+    font-size: 1.1rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 6;
+  }
+  .scroll-arrow.left { left: 14px; transform: translateY(-50%) rotate(180deg); }
+  .scroll-arrow.right { right: 14px; transform: translateY(-50%); }
+  .gallery-scroll.can-scroll .scroll-arrow { opacity: 1; }
+  .gallery-scroll.can-scroll.at-start .scroll-arrow.left { opacity: 0; }
+  .gallery-scroll.can-scroll.at-end .scroll-arrow.right { opacity: 0; }
   .gallery-scroll::-webkit-scrollbar { height: 8px; }
   .gallery-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.35); border-radius: 4px; }
   .gallery-scroll::-webkit-scrollbar-track { background: transparent; }
@@ -75,12 +102,13 @@
   ============================================================= */
   .gallery {
     display: grid;
-    grid-template-columns: repeat(17, 96px);
+    grid-template-columns: repeat(16, 96px);
+    grid-template-rows: repeat(5, 64px);
     grid-auto-rows: 64px;
     grid-auto-flow: dense;
-    gap: 40px;
+    gap: 30px;
     width: max-content;
-    padding: 0 40px;
+    padding: 20px;
   }
 
   .frame-slot { position: relative; }
@@ -94,9 +122,28 @@
   }
   .frame-slot:not(.empty):hover .frame-outer,
   .frame-slot:not(.empty):focus-visible .frame-outer {
-    transform: scale(1.12);
     box-shadow: 0 18px 34px -10px rgba(0,0,0,0.6);
     z-index: 5;
+  }
+  .frame-slot.small:not(.empty):hover .frame-outer,
+  .frame-slot.small:not(.empty):focus-visible .frame-outer {
+    transform: scale(1.75);
+  }
+  .frame-slot.hero-orion:not(.empty):hover .frame-outer,
+  .frame-slot.hero-ruby:not(.empty):hover .frame-outer,
+  .frame-slot.hero-winston:not(.empty):hover .frame-outer,
+  .frame-slot.hero-coco:not(.empty):hover .frame-outer,
+  .frame-slot.hero-uno:not(.empty):hover .frame-outer,
+  .frame-slot.hero-orion:not(.empty):focus-visible .frame-outer,
+  .frame-slot.hero-ruby:not(.empty):focus-visible .frame-outer,
+  .frame-slot.hero-winston:not(.empty):focus-visible .frame-outer,
+  .frame-slot.hero-coco:not(.empty):focus-visible .frame-outer,
+  .frame-slot.hero-uno:not(.empty):focus-visible .frame-outer {
+    transform: scale(1.12);
+  }
+  .frame-slot.hero-penny-mali:not(.empty):hover .frame-outer,
+  .frame-slot.hero-penny-mali:not(.empty):focus-visible .frame-outer {
+    transform: scale(1.08);
   }
   .frame-photo { width: 100%; height: 100%; overflow: hidden; background: #e8e5df; display: flex; align-items: center; justify-content: center; }
   .frame-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -123,14 +170,13 @@
     width: 320px; height: 256px; /* 20" x 16" at 16px/inch */
   }
 
-  /* Fixed hero positions — shifted down one row/column from the raw
-     screenshot reading, to leave a little breathing room at the top-left. */
-  .frame-slot.hero-orion       { grid-column: 2 / span 2;  grid-row: 2 / span 2; }
-  .frame-slot.hero-ruby        { grid-column: 10 / span 2; grid-row: 2 / span 2; }
-  .frame-slot.hero-penny-mali  { grid-column: 6 / span 3;  grid-row: 3 / span 3; }
-  .frame-slot.hero-winston     { grid-column: 14 / span 2; grid-row: 3 / span 2; }
-  .frame-slot.hero-coco        { grid-column: 2 / span 2;  grid-row: 5 / span 2; }
-  .frame-slot.hero-uno         { grid-column: 12 / span 2; grid-row: 5 / span 2; }
+  /* Fixed hero positions tuned to fit within a five-row grid. */
+  .frame-slot.hero-orion       { grid-column: 1 / span 2;  grid-row: 1 / span 2; }
+  .frame-slot.hero-ruby        { grid-column: 10 / span 2; grid-row: 1 / span 2; }
+  .frame-slot.hero-penny-mali  { grid-column: 6 / span 3;  grid-row: 2 / span 3; }
+  .frame-slot.hero-winston     { grid-column: 15 / span 2; grid-row: 2 / span 2; }
+  .frame-slot.hero-coco        { grid-column: 3 / span 2;  grid-row: 4 / span 2; }
+  .frame-slot.hero-uno         { grid-column: 12 / span 2; grid-row: 4 / span 2; }
 
   .status-line { text-align: center; color: var(--wainscot); opacity: 0.8; font-size: 0.85rem; padding: 24px; }
 
@@ -201,10 +247,9 @@
 <div class="dogwall-page">
   <div class="wrap">
     <div class="hero">
-      <img class="logo-mark" src="confluence-house.png" alt="The Confluence house illustration">
       <div class="eyebrow-dw">Guest Tradition</div>
       <h1 class="title">The Dog Wall</h1>
-      <p class="tagline">Every dog who's stayed with us leaves a face on the wall. Add yours below.</p>
+      <p class="tagline">This collection celebrates the dogs who are part of our community—family pets, visiting pups, guest dogs, and four-legged friends we've met along the way.</p>
     </div>
 
     <div class="plaque">
@@ -212,7 +257,9 @@
     </div>
   </div>
 
-  <div class="gallery-scroll">
+  <div class="gallery-scroll" id="galleryScroll">
+    <div class="scroll-arrow left" aria-hidden="true">➜</div>
+    <div class="scroll-arrow right" aria-hidden="true">➜</div>
     <div id="gallery" class="gallery" aria-live="polite"></div>
   </div>
   <div id="statusLine" class="status-line" style="display:none;"></div>
@@ -266,6 +313,7 @@ const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 (function(){
   const gallery = document.getElementById('gallery');
+  const galleryScroll = document.getElementById('galleryScroll');
   const statusLine = document.getElementById('statusLine');
   const overlay = document.getElementById('overlay');
   const openAdd = document.getElementById('openAdd');
@@ -286,6 +334,26 @@ const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   function showError(msg){ errBanner.textContent = msg; errBanner.classList.add('show'); }
   function clearError(){ errBanner.classList.remove('show'); errBanner.textContent = ''; }
   function escapeHtml(str){ const d = document.createElement('div'); d.textContent = str || ''; return d.innerHTML; }
+
+  function updateScrollHint(){
+    if (!galleryScroll) return;
+    const canScroll = galleryScroll.scrollWidth > galleryScroll.clientWidth + 1;
+    if (!canScroll) {
+      galleryScroll.classList.remove('can-scroll', 'at-start', 'at-end');
+      return;
+    }
+
+    const atStart = galleryScroll.scrollLeft <= 1;
+    const atEnd = galleryScroll.scrollLeft + galleryScroll.clientWidth >= galleryScroll.scrollWidth - 1;
+
+    galleryScroll.classList.add('can-scroll');
+    galleryScroll.classList.toggle('at-start', atStart);
+    galleryScroll.classList.toggle('at-end', atEnd);
+  }
+
+  galleryScroll.addEventListener('scroll', updateScrollHint, { passive: true });
+  window.addEventListener('resize', updateScrollHint);
+  setTimeout(updateScrollHint, 100);
 
   openAdd.addEventListener('click', () => overlay.classList.add('open'));
   cancelBtn.addEventListener('click', () => overlay.classList.remove('open'));
@@ -543,12 +611,12 @@ const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       });
 
       // Fill EVERY remaining small-frame cell in the grid with either a real
-      // dog or a placeholder — nothing is left blank. Grid is 17 columns
-      // wide; we give it 8 rows of "room" (including margin above/below the
-      // hero frames). Hero frames use up (5 medium x 4 cells) + (1 large x
-      // 9 cells) = 29 cells; everything else in that 17x8 area is a small slot.
-      const GRID_COLUMNS = 17;
-      const GRID_ROWS = 8;
+      // dog or a placeholder — nothing is left blank. Grid is 16 columns
+      // wide and 5 rows tall to match the layout. Hero frames use up
+      // (5 medium x 4 cells) + (1 large x 9 cells) = 29 cells; everything
+      // else in that 16x5 area is a small slot.
+      const GRID_COLUMNS = 16;
+      const GRID_ROWS = 5;
       const HERO_CELLS_USED = 29;
       const TOTAL_SMALL_SLOTS = (GRID_COLUMNS * GRID_ROWS) - HERO_CELLS_USED;
       const ghostCount = Math.max(0, TOTAL_SMALL_SLOTS - rest.length);
@@ -556,6 +624,7 @@ const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
       statusLine.style.display = 'none';
       gallery.innerHTML = html;
+      updateScrollHint();
     } catch (err) {
       statusLine.textContent = "Couldn't load the wall right now. Check your Supabase config.";
       console.error(err);
