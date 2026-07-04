@@ -2,7 +2,31 @@
    The Confluence — shared site styles
    Used by every page. Edit here to change the look everywhere.
 ============================================================= */
-:root{
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Montserrat:wght@400;500;600;700&display=swap');
+ 
+/* ============================================================
+   FONTS
+   Headings want "Higuen Elegant Serif" — this is a PAID font
+   (Creative Market), not on Google Fonts. To use it:
+   1. Buy a commercial license and download the font files
+   2. Convert to .woff2/.woff if needed (e.g. via Transfonter)
+   3. Drop the files in a /fonts folder next to this CSS
+   4. Uncomment the @font-face block below and point it at your files
+   Until then, this falls back to Cormorant Garamond (free, similar
+   elegant-serif feel) so the site still looks intentional.
+============================================================= */
+
+@font-face {
+  font-family: 'Higuen Elegant Serif';
+  src: url('fonts/Higuen-Regular.woff2') format('woff2'),
+       url('fonts/Higuen-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+}
+*/
+:root {
+  --font-heading: 'Higuen Elegant Serif', 'Cormorant Garamond', 'Fraunces', serif;
+  --font-body: 'Montserrat', 'Inter', sans-serif;
   --wall: #9c9184;
   --wall-2: #948a7d;
   --wainscot: #f4f2ee;
