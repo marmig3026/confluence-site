@@ -10,7 +10,41 @@
 <link rel="stylesheet" href="site.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-  .dogwall-page { background: linear-gradient(180deg, var(--wall) 0%, var(--wall-2) 100%); }
+  /* ============================================================
+     WALL BACKGROUND PHOTO
+     Drop your own photo of the actual wall into this folder and
+     set the filename below. background-size: cover makes it scale
+     and crop responsively on any screen size — it always fills the
+     space without stretching or distorting.
+  ============================================================= */
+  .dogwall-page {
+    background-color: #a8998a; /* shows briefly while the photo loads, or if it fails to load */
+    background-image: url('wall-texture.jpg');
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+  }
+  .chair-rail { height: 10px; background: linear-gradient(180deg, #ffffff 0%, #efeee7 100%); box-shadow: 0 2px 5px rgba(0,0,0,0.18); }
+
+  /* This page's nav bar goes frosted/translucent instead of solid cream,
+     so your wall photo shows through softly as the page scrolls beneath it. */
+  body[data-page="dogwall"] .site-header {
+    background: rgba(255,255,255,0.18);
+    border-bottom: 1px solid rgba(255,255,255,0.25);
+    backdrop-filter: blur(10px);
+  }
+  body[data-page="dogwall"] .brand span,
+  body[data-page="dogwall"] .nav-links a:not(.cta) {
+    color: #fff;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+  }
+  body[data-page="dogwall"] .nav-links a.cta {
+    background: rgba(255,255,255,0.9);
+    color: var(--frame);
+  }
+  body[data-page="dogwall"] .nav-toggle span {
+    background: #fff;
+  }
   .wrap { max-width: 1120px; margin: 0 auto; padding: 44px 20px 0; }
   .hero { text-align: center; margin-bottom: 6px; }
   .logo-mark { width: 92px; margin: 0 auto 18px; display: block; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.15)); }
@@ -20,26 +54,51 @@
   .plaque { max-width: 540px; margin: 34px auto 46px; background: var(--wainscot); padding: 20px 24px; text-align: center; box-shadow: 0 12px 24px -16px rgba(0,0,0,0.5); }
   .plaque p { margin: 0; font-size: 0.86rem; line-height: 1.6; color: var(--ink-soft); }
   .plaque strong { color: var(--ink); font-weight: 600; }
-  .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 34px 20px; padding: 10px 4px 60px; align-items: start; }
-  .frame-slot.large { grid-column: span 2; }
-  @media (max-width: 480px) { .gallery { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); } }
+  .gallery {
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+    gap: 26px;
+    padding: 20px 28px 60px;
+    align-items: center;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+  }
+  .gallery::-webkit-scrollbar { height: 8px; }
+  .gallery::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.35); border-radius: 4px; }
+  .gallery::-webkit-scrollbar-track { background: transparent; }
+
+  .frame-slot { flex: 0 0 auto; width: 240px; scroll-snap-align: center; }
+  .frame-slot.large { width: 400px; }
+  @media (max-width: 480px) {
+    .frame-slot { width: 200px; }
+    .frame-slot.large { width: 320px; }
+  }
+
   .frame-slot:not(.empty) { cursor: pointer; }
-  .frame-outer { background: var(--frame); padding: 8px; box-shadow: 0 8px 18px -8px rgba(0,0,0,0.5); transition: transform 0.18s ease, box-shadow 0.18s ease; }
-  .frame-slot:not(.empty):hover .frame-outer, .frame-slot:not(.empty):focus-visible .frame-outer { transform: scale(1.05); box-shadow: 0 16px 30px -10px rgba(0,0,0,0.6); }
-  .frame-mat { background: var(--mat); padding: 10px; }
+  .frame-outer {
+    background: var(--frame);
+    padding: 10px;
+    box-shadow: 0 8px 18px -8px rgba(0,0,0,0.5);
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+  }
+  .frame-slot:not(.empty):hover .frame-outer,
+  .frame-slot:not(.empty):focus-visible .frame-outer {
+    transform: scale(1.05);
+    box-shadow: 0 16px 30px -10px rgba(0,0,0,0.6);
+  }
+
+
   .frame-photo { width: 100%; aspect-ratio: 5/4; overflow: hidden; background: #e8e5df; display: flex; align-items: center; justify-content: center; }
   .frame-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .frame-photo.ghost { color: var(--ink-soft); font-size: 0.72rem; text-align: center; padding: 8px; line-height: 1.4; }
-  .caption { margin-top: 10px; text-align: center; }
-  .cap-name { font-family: 'Fraunces', serif; font-weight: 600; font-size: 0.78rem; letter-spacing: 0.03em; text-transform: uppercase; color: var(--wainscot); }
-  .cap-meta { font-size: 0.6rem; letter-spacing: 0.09em; text-transform: uppercase; color: var(--wainscot); opacity: 0.75; margin-top: 4px; }
+
   .frame-slot.empty .frame-outer { background: transparent; box-shadow: none; border: 1.5px dashed rgba(255,255,255,0.35); }
-  .frame-slot.empty .frame-mat { background: rgba(255,255,255,0.06); }
-  .frame-slot.empty .cap-name { opacity: 0.7; font-family: 'Inter', sans-serif; text-transform: none; letter-spacing: 0; font-weight: 500; }
+
   .status-line { text-align: center; color: var(--wainscot); opacity: 0.8; font-size: 0.85rem; padding: 24px; }
-  .wainscot-band { background: var(--wainscot); border-top: 6px solid #e2ded4; padding: 18px 20px 26px; display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
-  .panel { flex: 1 1 160px; max-width: 260px; height: 56px; border: 2px solid #d8d3c6; border-radius: 2px; position: relative; }
-  .panel::after { content: ''; position: absolute; inset: 6px; border: 1px solid #e5e1d5; }
+  .wainscot-band { background: #ffffff; border-top: none; padding: 36px 20px 44px; display: flex; gap: 18px; justify-content: center; flex-wrap: wrap; box-shadow: 0 -4px 10px -6px rgba(0,0,0,0.15) inset; }
+  .panel { flex: 1 1 160px; max-width: 260px; height: 130px; border: 2px solid #e3e3e3; border-radius: 2px; position: relative; }
+  .panel::after { content: ''; position: absolute; inset: 8px; border: 1px solid #ececec; }
   .fab { position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%); background: var(--frame); color: #fff; border: none; padding: 14px 26px; border-radius: 999px; font-weight: 600; font-size: 0.9rem; cursor: pointer; box-shadow: 0 10px 24px -6px rgba(0,0,0,0.5); z-index: 40; font-family: inherit; }
   .fab:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
   .overlay { position: fixed; inset: 0; background: rgba(20,16,10,0.6); display: none; align-items: flex-end; justify-content: center; z-index: 55; }
@@ -70,6 +129,10 @@
   @media (min-width: 640px) { .detail-sheet { border-radius: 10px; } }
   .detail-photo { width: 100%; aspect-ratio: 4/3; overflow: hidden; }
   .detail-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .detail-photo.multi { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
+  .detail-photo.multi img { flex: 0 0 100%; scroll-snap-align: center; }
+  .detail-photo.multi::-webkit-scrollbar { height: 6px; }
+  .detail-photo.multi::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.25); border-radius: 3px; }
   .detail-body { padding: 22px 24px 28px; }
   .detail-name { font-family: 'Fraunces', serif; font-weight: 600; font-size: 1.5rem; margin: 0 0 4px; }
   .detail-meta { font-size: 0.78rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 16px; }
@@ -98,6 +161,7 @@
     <div id="statusLine" class="status-line" style="display:none;"></div>
   </div>
 
+  <div class="chair-rail"></div>
   <div class="wainscot-band">
     <div class="panel"></div><div class="panel"></div><div class="panel"></div>
   </div>
@@ -146,7 +210,7 @@
 const SUPABASE_URL = 'https://cwzdmcvlidgtfiuekykb.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_mMM20BvCewoE4b2XGjDOHg_7QgZRWUk';
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 (function(){
   const gallery = document.getElementById('gallery');
@@ -165,7 +229,6 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   const detailSheet = document.getElementById('detailSheet');
 
   let pendingImageBase64 = null;
-  let pendingTileBase64 = null;
   let currentEntries = [];
 
   function showError(msg){ errBanner.textContent = msg; errBanner.classList.add('show'); }
@@ -176,41 +239,6 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   cancelBtn.addEventListener('click', () => overlay.classList.remove('open'));
   overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.classList.remove('open'); });
   detailOverlay.addEventListener('click', (e) => { if (e.target === detailOverlay) detailOverlay.classList.remove('open'); });
-
-  function createWatercolorTile(img, w, h){
-    const canvas = document.createElement('canvas');
-    canvas.width = w; canvas.height = h;
-    const ctx = canvas.getContext('2d');
-    ctx.filter = 'blur(3px) saturate(1.3) contrast(0.92) brightness(1.05)';
-    ctx.drawImage(img, 0, 0, w, h);
-    ctx.filter = 'none';
-    const imgData = ctx.getImageData(0, 0, w, h);
-    const d = imgData.data;
-    const levels = 40;
-    for (let i = 0; i < d.length; i += 4) {
-      d[i]   = Math.min(255, Math.round(d[i]   / levels) * levels);
-      d[i+1] = Math.min(255, Math.round(d[i+1] / levels) * levels);
-      d[i+2] = Math.min(255, Math.round(d[i+2] / levels) * levels);
-    }
-    ctx.putImageData(imgData, 0, 0);
-    ctx.globalCompositeOperation = 'overlay';
-    ctx.globalAlpha = 0.05;
-    const grainCount = Math.floor((w * h) / 700);
-    for (let i = 0; i < grainCount; i++) {
-      const gx = Math.random() * w, gy = Math.random() * h;
-      const shade = Math.random() > 0.5 ? '255,255,255' : '0,0,0';
-      ctx.fillStyle = 'rgba(' + shade + ',1)';
-      ctx.fillRect(gx, gy, 1.3, 1.3);
-    }
-    ctx.globalAlpha = 1;
-    ctx.globalCompositeOperation = 'source-over';
-    const grad = ctx.createRadialGradient(w/2, h/2, Math.min(w,h)*0.32, w/2, h/2, Math.min(w,h)*0.72);
-    grad.addColorStop(0, 'rgba(250,247,240,0)');
-    grad.addColorStop(1, 'rgba(250,247,240,0.4)');
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, w, h);
-    return canvas.toDataURL('image/jpeg', 0.82);
-  }
 
   function dataURLtoBlob(dataurl){
     const arr = dataurl.split(',');
@@ -238,8 +266,6 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         canvas.width = w; canvas.height = h;
         canvas.getContext('2d').drawImage(img, 0, 0, w, h);
         pendingImageBase64 = canvas.toDataURL('image/jpeg', 0.78);
-        try { pendingTileBase64 = createWatercolorTile(img, w, h); }
-        catch (styleErr) { pendingTileBase64 = pendingImageBase64; }
         previewImg.src = pendingImageBase64;
         previewWrap.classList.add('show');
         pickerText.textContent = 'Tap to choose a different photo';
@@ -276,19 +302,18 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     try {
       const id = crypto.randomUUID();
       const realBlob = dataURLtoBlob(pendingImageBase64);
-      const tileBlob = dataURLtoBlob(pendingTileBase64);
 
-      const { error: upErr1 } = await supabase.storage.from('dog-photos').upload(`real/${id}.jpg`, realBlob, { contentType: 'image/jpeg' });
+      const { error: upErr1 } = await sb.storage.from('dog-photos').upload(`real/${id}.jpg`, realBlob, { contentType: 'image/jpeg' });
       if (upErr1) throw upErr1;
-      const { error: upErr2 } = await supabase.storage.from('dog-photos').upload(`tile/${id}.jpg`, tileBlob, { contentType: 'image/jpeg' });
-      if (upErr2) throw upErr2;
 
-      const { data: realUrlData } = supabase.storage.from('dog-photos').getPublicUrl(`real/${id}.jpg`);
-      const { data: tileUrlData } = supabase.storage.from('dog-photos').getPublicUrl(`tile/${id}.jpg`);
+      const { data: realUrlData } = sb.storage.from('dog-photos').getPublicUrl(`real/${id}.jpg`);
 
-      const { error: insertErr } = await supabase.from('dog_wall').insert({
+      // tile_image_url (the watercolor version) is left blank here — the
+      // property manager adds it manually later from the admin page.
+      // The wall falls back to showing the real photo until then.
+      const { error: insertErr } = await sb.from('dog_wall').insert({
         names, location, when_stayed: formatMonth(whenRaw), fun_fact: funFact || null,
-        image_url: realUrlData.publicUrl, tile_image_url: tileUrlData.publicUrl, status: 'pending'
+        image_url: realUrlData.publicUrl, tile_image_url: null, status: 'pending'
       });
       if (insertErr) throw insertErr;
 
@@ -297,7 +322,6 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       previewWrap.classList.remove('show');
       pickerText.textContent = 'Tap to take or choose a photo';
       pendingImageBase64 = null;
-      pendingTileBase64 = null;
       statusLine.style.display = 'block';
       statusLine.textContent = 'Thanks! Your submission is awaiting approval.';
       setTimeout(() => { if (currentEntries.length) statusLine.style.display = 'none'; }, 3500);
@@ -311,25 +335,30 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   });
 
   function frameHTML(entry, idx){
-    const large = (idx % 6 === 0) ? ' large' : '';
+    const isFeatured = !!entry._featured;
+    const sizeClass = isFeatured ? ' large' : '';
     return `
-      <div class="frame-slot${large}" data-idx="${idx}" tabindex="0" role="button" aria-label="View ${escapeHtml(entry.names)}">
-        <div class="frame-outer"><div class="frame-mat"><div class="frame-photo"><img src="${entry.tile_image_url || entry.image_url}" alt="${escapeHtml(entry.names)}"></div></div></div>
-        <div class="caption">
-          <div class="cap-name">${escapeHtml(entry.names)}</div>
-          <div class="cap-meta">${escapeHtml(entry.location)} &middot; ${escapeHtml(entry.when_stayed)}</div>
-        </div>
+      <div class="frame-slot${sizeClass}" data-idx="${idx}" tabindex="0" role="button" aria-label="View ${escapeHtml(entry.names)}">
+        <div class="frame-outer"><div class="frame-photo"><img src="${entry.tile_image_url || entry.image_url}" alt="${escapeHtml(entry.names)}"></div></div>
       </div>`;
   }
   function ghostFrameHTML(text){
-    return `<div class="frame-slot empty"><div class="frame-outer"><div class="frame-mat"><div class="frame-photo ghost">${text}</div></div></div><div class="caption"><div class="cap-name">&nbsp;</div></div></div>`;
+    return `<div class="frame-slot empty"><div class="frame-outer"><div class="frame-photo ghost">${text}</div></div></div>`;
   }
   function openDetail(entry){
+    const images = (entry.extra_images && entry.extra_images.length > 0) ? entry.extra_images : [entry.image_url];
+    const photoHTML = images.length > 1
+      ? `<div class="detail-photo multi">${images.map(url => `<img src="${url}" alt="${escapeHtml(entry.names)}">`).join('')}</div>`
+      : `<div class="detail-photo"><img src="${images[0]}" alt="${escapeHtml(entry.names)}"></div>`;
+
+    const line1 = entry._featured ? 'Pittsburgh, PA' : escapeHtml(entry.location);
+    const line2 = entry._featured ? 'Resident Pawperty Managers' : escapeHtml(entry.when_stayed);
+
     detailSheet.innerHTML = `
-      <div class="detail-photo"><img src="${entry.image_url}" alt="${escapeHtml(entry.names)}"></div>
+      ${photoHTML}
       <div class="detail-body">
         <div class="detail-name">${escapeHtml(entry.names)}</div>
-        <div class="detail-meta">${escapeHtml(entry.location)} &middot; ${escapeHtml(entry.when_stayed)}</div>
+        <div class="detail-meta">${line1} &middot; ${line2}</div>
         ${entry.fun_fact ? `<div class="detail-fact">${escapeHtml(entry.fun_fact)}</div>` : ''}
         <button class="detail-close" id="detailCloseBtn">Close</button>
       </div>`;
@@ -356,7 +385,7 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     statusLine.textContent = 'Hanging the wall...';
     gallery.innerHTML = '';
     try {
-      const { data, error } = await supabase.from('dog_wall').select('*').eq('status', 'approved').order('created_at', { ascending: false });
+      const { data, error } = await sb.from('dog_wall').select('*').eq('status', 'approved').order('created_at', { ascending: false });
       if (error) throw error;
       if (!data || data.length === 0) {
         statusLine.style.display = 'none';
@@ -364,9 +393,26 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         gallery.innerHTML = ghostFrameHTML('Be the first face<br>on the wall') + ghostFrameHTML('This spot is<br>waiting for you') + ghostFrameHTML('Scan. Snap.<br>Say hello.');
         return;
       }
-      currentEntries = data;
+
+      // Mali & Penny always get the large gold frame, and always sit in the
+      // middle of the wall, no matter how many other dogs are added.
+      const isMaliAndPenny = (entry) => {
+        const n = (entry.names || '').toLowerCase();
+        return n.includes('mali') && n.includes('penny');
+      };
+      const featured = data.find(isMaliAndPenny);
+      const rest = data.filter((entry) => !isMaliAndPenny(entry));
+
+      let ordered = rest;
+      if (featured) {
+        featured._featured = true;
+        const middle = Math.floor(rest.length / 2);
+        ordered = [...rest.slice(0, middle), featured, ...rest.slice(middle)];
+      }
+
+      currentEntries = ordered;
       statusLine.style.display = 'none';
-      gallery.innerHTML = data.map(frameHTML).join('');
+      gallery.innerHTML = ordered.map(frameHTML).join('');
     } catch (err) {
       statusLine.textContent = "Couldn't load the wall right now. Check your Supabase config.";
       console.error(err);
