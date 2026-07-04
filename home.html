@@ -21,7 +21,6 @@
     justify-content: center;
     text-align: center;
     color: #fff;
-    margin-top: -61px; /* pulls up under the sticky header so video reaches the very top */
   }
   .hero-video video {
     position: absolute; inset: 0;
@@ -91,6 +90,38 @@
   .intro-copy p {
     color: var(--ink-soft); line-height: 1.75; font-size: 1.05rem;
   }
+
+  /* ---------- Homepage-only nav override: transparent, white text ---------- */
+  /* This only applies here because of the body[data-page="home"] selector —
+     every other page keeps the normal solid header from site.css untouched. */
+  body[data-page="home"] .site-header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    background: transparent;
+    border-bottom: none;
+    box-shadow: none;
+  }
+  body[data-page="home"] .brand span {
+    color: #fff;
+  }
+  body[data-page="home"] .nav-links a:not(.cta) {
+    color: #fff;
+  }
+  body[data-page="home"] .nav-links a:not(.cta):hover,
+  body[data-page="home"] .nav-links a.active:not(.cta) {
+    color: #fff;
+    border-bottom-color: #fff;
+  }
+  body[data-page="home"] .nav-links a.cta {
+    background: #fff;
+    color: var(--frame);
+  }
+  body[data-page="home"] .nav-toggle span {
+    background: #fff;
+  }
+  /* When the mobile menu is open, give it a solid background so it stays
+     readable — this rule already exists in site.css for .nav-links.open,
+     so no extra override is needed here. */
 </style>
 </head>
 <body data-page="home">
@@ -105,7 +136,7 @@
        shows while the video loads, or if video can't play.
   ============================================================= -->
   <video autoplay muted loop playsinline poster="confluence-house.png">
-    <source src="confluence-hero.mp4" type="video/mp4">
+    <source src="REPLACE-WITH-YOUR-VIDEO.mp4" type="video/mp4">
   </video>
   <div class="hero-content">
     <h1>Where Pittsburgh Comes Together</h1>
