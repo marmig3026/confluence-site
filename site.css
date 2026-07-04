@@ -124,7 +124,7 @@ h1,h2,h3 { font-family:'Fraunces',serif; font-weight:500; margin:0; }
 .btn-primary:hover { opacity:0.9; }
 
 .placeholder-note {
-  background: #fff7e6; border:1px solid #e8d5a0; color:#6b5320; font-size:0.7 rem;
+  background: #fff7e6; border:1px solid #e8d5a0; color:#6b5320; font-size:0.7rem;
   padding:10px 14px; border-radius:8px; margin: 18px auto; max-width: 700px;
 }
 

@@ -149,8 +149,18 @@
 <div class="intro-copy">
   <p>A confluence is where separate paths become one. At The Confluence, two thoughtfully designed suites offer the flexibility to enjoy an intimate getaway or stay side by side with family and friends. Whether you're here to celebrate, reconnect, or explore Pittsburgh, we hope your stay brings people together in meaningful ways.</p>
 </div>
+
+<svg class="confluence-motif" viewBox="0 0 220 70" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <path d="M10,5 C 60,5 70,35 110,35"></path>
+  <path d="M10,65 C 60,65 70,35 110,35"></path>
+  <path class="merged" d="M110,35 L 210,35"></path>
+</svg>
  
 <div class="section">
+  <div class="suites-heading">
+    <h2>The Suites</h2>
+    <p>Two private suites, or take them together as The Point.</p>
+  </div>
   <div class="card-grid">
     <a class="unit-card" href="unit-monongahela.html">
       <div class="thumb"><img src="monongahela-hero.jpg" alt=""></div>
@@ -211,7 +221,61 @@
     <a class="btn-primary" href="book.html">Check availability</a>
   </div>
 </div>
-
+<div class="section">
+  <div class="suites-heading">
+    <h2>Right in the Middle of It All</h2>
+    <p>See how close The Confluence is to Pittsburgh's best spots.</p>
+  </div>
+  <div id="confluence-map"></div>
+</div>
+ 
+<script>
+  // ============================================================
+  // MAP CONFIG
+  // Replace HOUSE_LAT / HOUSE_LNG with your real address's coordinates.
+  // Easiest way: open Google Maps, right-click your house's exact spot,
+  // click the coordinates that pop up to copy them.
+  // The attraction list below is illustrative — edit names/spots as you like.
+  // ============================================================
+  (function(){
+    var HOUSE_LAT = 40.4584007;
+    var HOUSE_LNG = -79.9901536; // placeholder — a Lawrenceville-ish spot. Replace with your real coordinates.
+ 
+    var attractions = [
+      { name: "Point State Park (The Point)", lat: 40.4416, lng: -80.0079, note: "Where the three rivers actually meet." },
+      { name: "Strip District", lat: 40.4501, lng: -79.9848, note: "Food, markets, and morning coffee." },
+      { name: "PNC Park", lat: 40.4469, lng: -80.0057, note: "Pirates baseball on the river." },
+      { name: "Carnegie Museums (Oakland)", lat: 40.4432, lng: -79.9497, note: "Art and natural history." },
+      { name: "Mount Washington", lat: 40.4325, lng: -80.0129, note: "The skyline view everyone photographs." }
+    ];
+ 
+    var map = L.map('confluence-map').setView([HOUSE_LAT, HOUSE_LNG], 13);
+ 
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors',
+      maxZoom: 19
+    }).addTo(map);
+ 
+    var houseIcon = L.divIcon({
+      className: '',
+      html: '<div style="background:#171614;width:16px;height:16px;border-radius:50%;border:3px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,0.4);"></div>',
+      iconSize: [16, 16],
+      iconAnchor: [8, 8]
+    });
+ 
+    L.marker([HOUSE_LAT, HOUSE_LNG], { icon: houseIcon })
+      .addTo(map)
+      .bindPopup('<strong>The Confluence</strong><br>You are here.')
+      .openPopup();
+ 
+    attractions.forEach(function(spot){
+      L.marker([spot.lat, spot.lng])
+        .addTo(map)
+        .bindPopup('<strong>' + spot.name + '</strong><br>' + spot.note);
+    });
+  })();
+</script>
+ 
 <div id="site-footer"></div>
 <script src="site.js"></script>
 </body>
