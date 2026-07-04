@@ -124,6 +124,20 @@
   /* When the mobile menu is open, give it a solid background so it stays
      readable — this rule already exists in site.css for .nav-links.open,
      so no extra override is needed here. */
+     /* ---------- Three-rivers confluence motif ---------- */
+  .confluence-motif { width: 220px; margin: 40px auto 10px; display: block; }
+  .confluence-motif path { fill: none; stroke: var(--river); stroke-width: 1.6; stroke-linecap: round; opacity: 0.55; }
+  .confluence-motif path.merged { opacity: 0.85; stroke-width: 2; }
+
+  /* ---------- Section heading above the unit cards ---------- */
+  .suites-heading { text-align: center; margin-bottom: 28px; }
+  .suites-heading h2 { font-size: clamp(1.6rem, 4vw, 2.2rem); }
+  .suites-heading p { color: var(--ink-soft); font-size: 0.92rem; margin-top: 8px; }
+
+  /* ---------- Neighborhood map ---------- */
+  #confluence-map { height: 440px; border-radius: 12px; box-shadow: 0 10px 26px -18px rgba(0,0,0,0.4); }
+  .leaflet-popup-content { font-family: 'Inter', sans-serif; font-size: 0.85rem; }
+  .leaflet-popup-content strong { font-family: 'Fraunces', serif; font-size: 0.95rem; }
 </style>
 </head>
 <body data-page="home">
@@ -157,13 +171,12 @@
   <path d="M10,65 C 60,65 70,35 110,35"></path>
   <path class="merged" d="M110,35 L 210,35"></path>
 </svg>
- 
+
+
 <div class="section">
   <div class="suites-heading">
     <h2>The Suites</h2>
-    <p>Two private suites, or take them together as The Point.</p>#confluence-map { height: 440px; border-radius: 12px; box-shadow: 0 10px 26px -18px rgba(0,0,0,0.4); }
-  .leaflet-popup-content { font-family: 'Inter', sans-serif; font-size: 0.85rem; }
-  .leaflet-popup-content strong { font-family: 'Fraunces', serif; font-size: 0.95rem; }
+    <p>Two private suites, or take them together as The Point.</p>
   </div>
   <div class="card-grid">
     <a class="unit-card" href="unit-monongahela.html">
@@ -246,6 +259,7 @@
  
     var attractions = [
       { name: "Point State Park (The Point)", lat: 40.4416, lng: -80.0079, note: "Where the three rivers actually meet." },
+      { name: "Acrisure Stadium (Heinz Field)", lat: 40.446732, lng: -80.015816, note: "Steelers football on the river." },
       { name: "Strip District", lat: 40.4501, lng: -79.9848, note: "Food, markets, and morning coffee." },
       { name: "PNC Park", lat: 40.4469, lng: -80.0057, note: "Pirates baseball on the river." },
       { name: "Carnegie Museums (Oakland)", lat: 40.4432, lng: -79.9497, note: "Art and natural history." },

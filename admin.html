@@ -19,14 +19,23 @@
   .login-box .sub { text-align:center; }
   label { display:block; font-size:0.72rem; font-weight:600; letter-spacing:0.04em; text-transform:uppercase; color:var(--ink-soft); margin:16px 0 6px; }
   label:first-of-type { margin-top:0; }
-  input { width:100%; padding:11px 12px; border:1px solid #00000022; border-radius:6px; font-size:0.95rem; font-family:inherit; }
+  input, textarea { width:100%; padding:11px 12px; border:1px solid #00000022; border-radius:6px; font-size:0.95rem; font-family:inherit; }
+  textarea { resize: vertical; min-height: 56px; }
   .btn { width:100%; margin-top:20px; padding:12px; border-radius:8px; border:none; background:var(--frame); color:#fff; font-weight:600; font-size:0.9rem; cursor:pointer; font-family:inherit; }
   .btn:disabled { opacity:0.55; }
   .err { color:#7a2d2d; font-size:0.82rem; margin-top:12px; display:none; }
   .err.show { display:block; }
+  .ok { color:#2d5a3d; font-size:0.82rem; margin-top:12px; display:none; }
+  .ok.show { display:block; }
 
-  .topbar { display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px; }
+  .topbar { display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px; flex-wrap: wrap; gap: 10px; }
   .logout { background:none; border:1px solid #00000022; padding:8px 14px; border-radius:6px; font-size:0.8rem; cursor:pointer; color:var(--ink-soft); font-family:inherit; }
+  .top-actions { display:flex; gap:8px; }
+  .add-btn { background:var(--frame); color:#fff; border:none; padding:8px 16px; border-radius:6px; font-size:0.8rem; cursor:pointer; font-weight:600; font-family:inherit; }
+
+  .tabs { display:flex; gap:8px; margin: 20px 0 18px; border-bottom: 1px solid #00000014; }
+  .tabs button { background:none; border:none; padding:10px 4px; margin-right:18px; font-size:0.88rem; font-weight:600; color:var(--ink-soft); cursor:pointer; border-bottom:2px solid transparent; font-family:inherit; }
+  .tabs button.active { color:var(--ink); border-bottom-color:var(--frame); }
 
   .row { display:flex; gap:14px; background:#fff; border-radius:10px; padding:14px; margin-bottom:14px; align-items:flex-start; box-shadow:0 4px 14px -10px rgba(0,0,0,0.3); }
   .row img { width:84px; height:84px; object-fit:cover; border-radius:8px; flex-shrink:0; }
@@ -39,6 +48,15 @@
   .reject { background:#7a2d2d; color:#fff; }
   .empty { text-align:center; color:var(--ink-soft); padding:50px 10px; }
   .hidden { display:none; }
+
+  /* Add-dog form panel */
+  .add-panel { background:#fff; border-radius:10px; padding:20px 22px 24px; margin-bottom:24px; box-shadow:0 4px 14px -10px rgba(0,0,0,0.3); }
+  .photo-picker { border: 1.5px dashed #00000030; border-radius: 8px; padding: 16px; text-align: center; cursor: pointer; background: #fafafa; }
+  .photo-picker input { display:none; }
+  .photo-picker .ppt { font-size: 0.85rem; color: var(--ink-soft); }
+  .preview-wrap { margin-top: 10px; display:none; }
+  .preview-wrap.show { display:block; }
+  .preview-wrap img { width:100%; max-height:200px; object-fit:cover; border-radius:8px; }
 </style>
 </head>
 <body>
@@ -61,10 +79,43 @@
 <div id="adminView" class="wrap hidden">
   <div class="topbar">
     <div>
-      <h1>Pending submissions</h1>
-      <div class="sub" style="margin-bottom:0;">Approve a dog to add it to the public wall.</div>
+      <h1>Dog Wall Moderation</h1>
+      <div class="sub" style="margin-bottom:0;">Review new submissions, or add dogs who've already stayed.</div>
     </div>
-    <button class="logout" id="logoutBtn">Sign out</button>
+    <div class="top-actions">
+      <button class="add-btn" id="toggleAddBtn">+ Add a dog</button>
+      <button class="logout" id="logoutBtn">Sign out</button>
+    </div>
+  </div>
+
+  <!-- Add existing/past dog directly to the wall (skips moderation queue) -->
+  <div class="add-panel hidden" id="addPanel">
+    <h2 style="font-size:1.1rem; margin:0 0 4px;">Add a dog who's already stayed</h2>
+    <div class="sub" style="margin-bottom:16px;">This goes straight to the public wall — no review step.</div>
+    <form id="addForm">
+      <label for="addNames">Dog's name(s)</label>
+      <input type="text" id="addNames" maxlength="50" placeholder="e.g. Orion, Teddy, &amp; Remi">
+      <label for="addLocation">Where were they visiting from?</label>
+      <input type="text" id="addLocation" maxlength="40" placeholder="e.g. Carrollton, OH">
+      <label for="addWhen">When did they stay?</label>
+      <input type="month" id="addWhen">
+      <label for="addFact">A fun fact (optional)</label>
+      <textarea id="addFact" maxlength="140" placeholder="e.g. Can do a backflip for a treat"></textarea>
+      <label>Photo</label>
+      <label class="photo-picker" id="addPickerLabel">
+        <input type="file" id="addPhoto" accept="image/*">
+        <div class="ppt" id="addPickerText">Tap to choose a photo</div>
+      </label>
+      <div class="preview-wrap" id="addPreviewWrap"><img id="addPreviewImg" alt=""></div>
+      <div class="err" id="addErr"></div>
+      <div class="ok" id="addOk">Added to the wall!</div>
+      <button type="submit" class="btn" id="addSubmitBtn">Add to the wall</button>
+    </form>
+  </div>
+
+  <div class="tabs">
+    <button data-tab="pending" class="active">Pending Review</button>
+    <button data-tab="approved">Live on the Wall</button>
   </div>
   <div id="list"></div>
 </div>
@@ -73,8 +124,8 @@
 // ============================================================
 // SUPABASE CONFIG — same project as index.html
 // ============================================================
-const SUPABASE_URL = 'https://YOUR-PROJECT-REF.supabase.co';
-const SUPABASE_ANON_KEY = 'YOUR-ANON-PUBLIC-KEY';
+const SUPABASE_URL = 'https://cwzdmcvlidgtfiuekykb.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_mMM20BvCewoE4b2XGjDOHg_7QgZRWUk';
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const loginView = document.getElementById('loginView');
@@ -84,6 +135,22 @@ const loginErr = document.getElementById('loginErr');
 const loginBtn = document.getElementById('loginBtn');
 const logoutBtn = document.getElementById('logoutBtn');
 const list = document.getElementById('list');
+const tabs = document.querySelectorAll('.tabs button');
+let currentTab = 'pending';
+
+const toggleAddBtn = document.getElementById('toggleAddBtn');
+const addPanel = document.getElementById('addPanel');
+const addForm = document.getElementById('addForm');
+const addPhoto = document.getElementById('addPhoto');
+const addPickerText = document.getElementById('addPickerText');
+const addPreviewWrap = document.getElementById('addPreviewWrap');
+const addPreviewImg = document.getElementById('addPreviewImg');
+const addErr = document.getElementById('addErr');
+const addOk = document.getElementById('addOk');
+const addSubmitBtn = document.getElementById('addSubmitBtn');
+
+let pendingRealImg = null;
+let pendingTileImg = null;
 
 function escapeHtml(str){ const d = document.createElement('div'); d.textContent = str || ''; return d.innerHTML; }
 
@@ -114,14 +181,165 @@ logoutBtn.addEventListener('click', async () => {
 async function showAdmin(){
   loginView.classList.add('hidden');
   adminView.classList.remove('hidden');
-  await loadPending();
+  await loadList();
 }
 
-async function loadPending(){
-  list.innerHTML = '<div class="empty">Loading submissions...</div>';
-  const { data, error } = await supabase.from('dog_wall').select('*').eq('status', 'pending').order('created_at', { ascending: true });
-  if (error) { list.innerHTML = '<div class="empty">Couldn\'t load submissions.</div>'; return; }
-  if (!data || data.length === 0) { list.innerHTML = '<div class="empty">No submissions waiting for review.</div>'; return; }
+tabs.forEach(btn => {
+  btn.addEventListener('click', () => {
+    tabs.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentTab = btn.dataset.tab;
+    loadList();
+  });
+});
+
+toggleAddBtn.addEventListener('click', () => {
+  addPanel.classList.toggle('hidden');
+});
+
+// ---------- Watercolor tile filter (same as guest-facing pages) ----------
+function createWatercolorTile(img, w, h){
+  const canvas = document.createElement('canvas');
+  canvas.width = w; canvas.height = h;
+  const ctx = canvas.getContext('2d');
+  ctx.filter = 'blur(3px) saturate(1.3) contrast(0.92) brightness(1.05)';
+  ctx.drawImage(img, 0, 0, w, h);
+  ctx.filter = 'none';
+  const imgData = ctx.getImageData(0, 0, w, h);
+  const d = imgData.data;
+  const levels = 40;
+  for (let i = 0; i < d.length; i += 4) {
+    d[i]   = Math.min(255, Math.round(d[i]   / levels) * levels);
+    d[i+1] = Math.min(255, Math.round(d[i+1] / levels) * levels);
+    d[i+2] = Math.min(255, Math.round(d[i+2] / levels) * levels);
+  }
+  ctx.putImageData(imgData, 0, 0);
+  ctx.globalCompositeOperation = 'overlay';
+  ctx.globalAlpha = 0.05;
+  const grainCount = Math.floor((w * h) / 700);
+  for (let i = 0; i < grainCount; i++) {
+    const gx = Math.random() * w, gy = Math.random() * h;
+    const shade = Math.random() > 0.5 ? '255,255,255' : '0,0,0';
+    ctx.fillStyle = 'rgba(' + shade + ',1)';
+    ctx.fillRect(gx, gy, 1.3, 1.3);
+  }
+  ctx.globalAlpha = 1;
+  ctx.globalCompositeOperation = 'source-over';
+  const grad = ctx.createRadialGradient(w/2, h/2, Math.min(w,h)*0.32, w/2, h/2, Math.min(w,h)*0.72);
+  grad.addColorStop(0, 'rgba(250,247,240,0)');
+  grad.addColorStop(1, 'rgba(250,247,240,0.4)');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, w, h);
+  return canvas.toDataURL('image/jpeg', 0.82);
+}
+
+function dataURLtoBlob(dataurl){
+  const arr = dataurl.split(',');
+  const mime = arr[0].match(/:(.*?);/)[1];
+  const bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+  while (n--) u8arr[n] = bstr.charCodeAt(n);
+  return new Blob([u8arr], { type: mime });
+}
+
+addPhoto.addEventListener('change', () => {
+  addErr.classList.remove('show');
+  const file = addPhoto.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const img = new Image();
+    img.onload = () => {
+      const maxDim = 900;
+      let w = img.width, h = img.height;
+      if (w > h && w > maxDim) { h = Math.round(h * (maxDim / w)); w = maxDim; }
+      else if (h > maxDim) { w = Math.round(w * (maxDim / h)); h = maxDim; }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      pendingRealImg = canvas.toDataURL('image/jpeg', 0.78);
+      try { pendingTileImg = createWatercolorTile(img, w, h); }
+      catch (err) { pendingTileImg = pendingRealImg; }
+      addPreviewImg.src = pendingRealImg;
+      addPreviewWrap.classList.add('show');
+      addPickerText.textContent = 'Tap to choose a different photo';
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+});
+
+function formatMonth(val){
+  if (!val) return '';
+  const [y, m] = val.split('-').map(Number);
+  return new Date(y, m - 1, 1).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+}
+
+addForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  addErr.classList.remove('show');
+  addOk.classList.remove('show');
+
+  const names = document.getElementById('addNames').value.trim();
+  const location = document.getElementById('addLocation').value.trim();
+  const whenRaw = document.getElementById('addWhen').value;
+  const funFact = document.getElementById('addFact').value.trim();
+
+  if (!names || !location || !whenRaw || !pendingRealImg) {
+    addErr.textContent = 'Fill in the name, location, date, and a photo.';
+    addErr.classList.add('show');
+    return;
+  }
+
+  addSubmitBtn.disabled = true;
+  addSubmitBtn.textContent = 'Adding...';
+
+  try {
+    const id = crypto.randomUUID();
+    const realBlob = dataURLtoBlob(pendingRealImg);
+    const tileBlob = dataURLtoBlob(pendingTileImg);
+
+    const { error: e1 } = await supabase.storage.from('dog-photos').upload(`real/${id}.jpg`, realBlob, { contentType: 'image/jpeg' });
+    if (e1) throw e1;
+    const { error: e2 } = await supabase.storage.from('dog-photos').upload(`tile/${id}.jpg`, tileBlob, { contentType: 'image/jpeg' });
+    if (e2) throw e2;
+
+    const { data: realUrl } = supabase.storage.from('dog-photos').getPublicUrl(`real/${id}.jpg`);
+    const { data: tileUrl } = supabase.storage.from('dog-photos').getPublicUrl(`tile/${id}.jpg`);
+
+    const { error: insertErr } = await supabase.from('dog_wall').insert({
+      names, location, when_stayed: formatMonth(whenRaw), fun_fact: funFact || null,
+      image_url: realUrl.publicUrl, tile_image_url: tileUrl.publicUrl,
+      status: 'approved'   // goes straight to the public wall, no review needed
+    });
+    if (insertErr) throw insertErr;
+
+    addForm.reset();
+    addPreviewWrap.classList.remove('show');
+    addPickerText.textContent = 'Tap to choose a photo';
+    pendingRealImg = null;
+    pendingTileImg = null;
+    addOk.classList.add('show');
+    if (currentTab === 'approved') loadList();
+  } catch (err) {
+    addErr.textContent = "Couldn't add this dog — check your connection and try again.";
+    addErr.classList.add('show');
+    console.error(err);
+  } finally {
+    addSubmitBtn.disabled = false;
+    addSubmitBtn.textContent = 'Add to the wall';
+  }
+});
+
+async function loadList(){
+  list.innerHTML = '<div class="empty">Loading...</div>';
+  const { data, error } = await supabase.from('dog_wall').select('*').eq('status', currentTab).order('created_at', { ascending: currentTab === 'pending' });
+  if (error) { list.innerHTML = '<div class="empty">Couldn\'t load this list.</div>'; return; }
+  if (!data || data.length === 0) {
+    list.innerHTML = `<div class="empty">${currentTab === 'pending' ? 'No submissions waiting for review.' : 'No dogs on the wall yet.'}</div>`;
+    return;
+  }
 
   list.innerHTML = data.map(entry => `
     <div class="row" data-id="${entry.id}">
@@ -131,8 +349,9 @@ async function loadPending(){
         ${escapeHtml(entry.location)} &middot; ${escapeHtml(entry.when_stayed)}
         ${entry.fun_fact ? `<div class="fact">${escapeHtml(entry.fun_fact)}</div>` : ''}
         <div class="actions">
-          <button class="approve" data-action="approve">Approve</button>
-          <button class="reject" data-action="reject">Reject</button>
+          ${currentTab === 'pending'
+            ? `<button class="approve" data-action="approve">Approve</button><button class="reject" data-action="reject">Reject</button>`
+            : `<button class="reject" data-action="remove">Remove from wall</button>`}
         </div>
       </div>
     </div>`).join('');
@@ -154,7 +373,9 @@ list.addEventListener('click', async (e) => {
       if (error) throw error;
     }
     row.remove();
-    if (!list.querySelector('.row')) list.innerHTML = '<div class="empty">No submissions waiting for review.</div>';
+    if (!list.querySelector('.row')) {
+      list.innerHTML = `<div class="empty">${currentTab === 'pending' ? 'No submissions waiting for review.' : 'No dogs on the wall yet.'}</div>`;
+    }
   } catch (err) {
     alert('Something went wrong — try again.');
     btn.disabled = false;
