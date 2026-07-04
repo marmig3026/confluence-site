@@ -102,6 +102,16 @@ h1,h2,h3 { font-family:'Fraunces',serif; font-weight:500; margin:0; }
 .unit-stats .stat { display:flex; align-items:center; gap:6px; color:var(--ink-soft); font-size:0.7rem; font-weight:500; }
 .unit-stats svg { color:var(--ink-soft); flex-shrink:0; }
 
+/* ---------- Three-rivers confluence motif ---------- */
+  .confluence-motif { width: 220px; margin: 40px auto 10px; display: block; }
+  .confluence-motif path { fill: none; stroke: var(--river); stroke-width: 1.6; stroke-linecap: round; opacity: 0.55; }
+  .confluence-motif path.merged { opacity: 0.85; stroke-width: 2; }
+
+  /* ---------- Section heading above the unit cards ---------- */
+  .suites-heading { text-align: center; margin-bottom: 28px; }
+  .suites-heading h2 { font-size: clamp(1.6rem, 4vw, 2.2rem); }
+  .suites-heading p { color: var(--ink-soft); font-size: 0.92rem; margin-top: 8px; }
+
 .amenity-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap:16px; margin-top:24px; }
 .amenity { background:#fff; border-radius:10px; padding:16px 18px; box-shadow: 0 6px 16px -12px rgba(0,0,0,0.3); }
 .amenity .label { font-size:0.68rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--ink-soft); font-weight:600; margin-bottom:4px; }
