@@ -3,7 +3,7 @@
    Used by every page. Edit here to change the look everywhere.
 ============================================================= */
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Montserrat:wght@400;500;600;700&display=swap');
- 
+
 /* ============================================================
    FONTS
    Headings want "Higuen Elegant Serif" — this is a PAID font
@@ -15,7 +15,7 @@
    Until then, this falls back to Cormorant Garamond (free, similar
    elegant-serif feel) so the site still looks intentional.
 ============================================================= */
-
+/*
 @font-face {
   font-family: 'Higuen Elegant Serif';
   src: url('fonts/Higuen-Regular.woff2') format('woff2'),
@@ -37,12 +37,12 @@
   --river: #3e5c66;
 }
 * { box-sizing: border-box; }
-html, body { margin:0; padding:0; background:var(--wainscot); color:var(--ink); font-family:'Inter',sans-serif; }
+html, body { margin:0; padding:0; background:var(--wainscot); color:var(--ink); font-family: var(--font-body); }
 img { max-width:100%; }
 a { color: inherit; }
 @media (prefers-reduced-motion: reduce) { * { animation:none !important; transition:none !important; } }
 
-h1,h2,h3 { font-family:'Fraunces',serif; font-weight:500; margin:0; }
+h1,h2,h3 { font-family: var(--font-heading); font-weight:500; margin:0; }
 
 /* ---------- Header / nav ---------- */
 .site-header {
@@ -58,7 +58,7 @@ h1,h2,h3 { font-family:'Fraunces',serif; font-weight:500; margin:0; }
 }
 .brand { display:flex; align-items:center; gap:10px; text-decoration:none; }
 .brand img { width: 34px; display:block; }
-.brand span { font-family:'Fraunces',serif; font-weight:600; font-size:1.05rem; color:var(--ink); }
+.brand span { font-family: var(--font-heading); font-weight:600; font-size:1.05rem; color:var(--ink); }
 
 .nav-links { display:flex; gap:26px; align-items:center; }
 .nav-links a {
@@ -94,10 +94,10 @@ h1,h2,h3 { font-family:'Fraunces',serif; font-weight:500; margin:0; }
 }
 .site-footer .brand-row { display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:10px; }
 .site-footer .brand-row img { width:30px; filter: invert(1) brightness(1.6); }
-.site-footer .brand-row span { font-family:'Fraunces',serif; font-size:1.1rem; color:#fff; }
+.site-footer .brand-row span { font-family: var(--font-heading); font-size:1.1rem; color:#fff; }
 .site-footer p { font-size:0.8rem; margin: 4px 0; opacity:0.75; }
 .site-footer .footer-links { margin-top:14px; display:flex; gap:18px; justify-content:center; flex-wrap:wrap; }
-.site-footer .footer-links a { font-size:0.7rem; text-decoration:none; color:#cfc9bd; opacity:0.85; }
+.site-footer .footer-links a { font-size:0.78rem; text-decoration:none; color:#cfc9bd; opacity:0.85; }
 .site-footer .footer-links a:hover { opacity:1; text-decoration:underline; }
 
 /* ---------- Shared page building blocks ---------- */
@@ -126,16 +126,6 @@ h1,h2,h3 { font-family:'Fraunces',serif; font-weight:500; margin:0; }
 .unit-stats .stat { display:flex; align-items:center; gap:6px; color:var(--ink-soft); font-size:0.7rem; font-weight:500; }
 .unit-stats svg { color:var(--ink-soft); flex-shrink:0; }
 
-/* ---------- Three-rivers confluence motif ---------- */
-  .confluence-motif { width: 220px; margin: 40px auto 10px; display: block; }
-  .confluence-motif path { fill: none; stroke: var(--river); stroke-width: 1.6; stroke-linecap: round; opacity: 0.55; }
-  .confluence-motif path.merged { opacity: 0.85; stroke-width: 2; }
-
-  /* ---------- Section heading above the unit cards ---------- */
-  .suites-heading { text-align: center; margin-bottom: 28px; }
-  .suites-heading h2 { font-size: clamp(1.6rem, 4vw, 2.2rem); }
-  .suites-heading p { color: var(--ink-soft); font-size: 0.92rem; margin-top: 8px; }
-
 .amenity-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap:16px; margin-top:24px; }
 .amenity { background:#fff; border-radius:10px; padding:16px 18px; box-shadow: 0 6px 16px -12px rgba(0,0,0,0.3); }
 .amenity .label { font-size:0.68rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--ink-soft); font-weight:600; margin-bottom:4px; }
@@ -148,7 +138,7 @@ h1,h2,h3 { font-family:'Fraunces',serif; font-weight:500; margin:0; }
 .btn-primary:hover { opacity:0.9; }
 
 .placeholder-note {
-  background: #fff7e6; border:1px solid #e8d5a0; color:#6b5320; font-size:0.7rem;
+  background: #fff7e6; border:1px solid #e8d5a0; color:#6b5320; font-size:0.78rem;
   padding:10px 14px; border-radius:8px; margin: 18px auto; max-width: 700px;
 }
 
