@@ -570,7 +570,22 @@ const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     { key: 'uno',     match: (n) => n.includes('uno') }
   ];
 
-  const DOG_ICON = `<div class="ghost-icon"><svg viewBox="0 0 64 64" fill="currentColor"><ellipse cx="32" cy="36" rx="17" ry="15"/><ellipse cx="15" cy="21" rx="7.5" ry="11.5" transform="rotate(-25 15 21)"/><ellipse cx="49" cy="21" rx="7.5" ry="11.5" transform="rotate(25 49 21)"/><ellipse cx="32" cy="43" rx="6.5" ry="4.5"/></svg></div>`;
+  // ============================================================
+  // GHOST PLACEHOLDER SILHOUETTES
+  // Save your 20 silhouette images into a "silhouettes" folder next
+  // to this file, named exactly: dog-silhouette-1.png through
+  // dog-silhouette-20.png (or change SILHOUETTE_COUNT / the filename
+  // pattern below to match whatever you actually name them).
+  // Each empty frame randomly picks one, so they mix naturally.
+  // ============================================================
+  const SILHOUETTE_COUNT = 20;
+  function randomSilhouette(){
+    const n = Math.floor(Math.random() * SILHOUETTE_COUNT) + 1;
+    return `silhouettes/dog-silhouette-${n}.png`;
+  }
+  function ghostIconHTML(){
+    return `<img class="ghost-icon-img" src="${randomSilhouette()}" alt="" loading="lazy">`;
+  }
 
   function heroFrameHTML(entry, key, idx){
     return `
